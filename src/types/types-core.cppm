@@ -28,6 +28,11 @@ namespace geng
             return quantize_(this->y) <=> quantize_(other_point.y);
         }
 
+        bool operator==(const Point& other_point) const
+        {
+            return (*this <=> other_point) == 0;
+        }
+
     private:
         int64_t quantize_(double v) const
         {
