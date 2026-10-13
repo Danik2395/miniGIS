@@ -9,19 +9,27 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 # set(CMAKE_AUTORCC ON)
 
+include(FetchContent)
+
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-set(SOURCES
+add_library(${PROJECT_NAME}_core OBJECT)
+
+target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
+    src/types/types.cppm
+    src/types/types-math.cppm
+    src/types/types-primitives.cppm
+    src/math.cppm
+)
+
+add_executable(${PROJECT_NAME} WIN32)
+
+target_sources(${PROJECT_NAME} PRIVATE
     src/main.cpp
 )
 
-add_executable(${PROJECT_NAME} WIN32 src/main.cpp)
-
-target_sources(${PROJECT_NAME} PRIVATE FILE_SET CXX_MODULES FILES
-    src/test.cppm
-)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${PROJECT_NAME}_core
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
