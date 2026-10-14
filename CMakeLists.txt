@@ -35,3 +35,28 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Widgets
 )
 
+if(BUILD_TESTS)
+    FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/b66cffcd5f5d6ee34a4f96d57bf016d9a22cb023.zip
+    )
+
+    FetchContent_MakeAvailable(googletest)
+
+    enable_testing()
+
+    add_executable(${PROJECT_NAME}_tests)
+
+    target_sources(${PROJECT_NAME}_tests PRIVATE FILE_SET CXX_MODULES FILES
+        src/test/test.cppm
+        src/test/test-math.cppm
+    )
+
+    target_link_libraries(${PROJECT_NAME}_tests PRIVATE
+        ${PROJECT_NAME}_core
+        GTest::gtest_main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(${PROJECT_NAME}_tests)
+endif()

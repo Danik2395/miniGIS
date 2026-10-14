@@ -4,14 +4,19 @@
         {
             "name": "debug",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "environment": {
                 "CC": "clang",
                 "CXX": "clang++"
             },
             "cacheVariables":
             {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": "ON",
+                "gtest_force_shared_crt": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
             }
         }
     ],
