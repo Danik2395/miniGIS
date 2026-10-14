@@ -1,3 +1,3 @@
 export module gengine.types;
-export import :core;
+export import :primitives;
 export import :math;

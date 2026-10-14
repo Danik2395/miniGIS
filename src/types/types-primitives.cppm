@@ -4,7 +4,7 @@ module;
 #include <cstdint>
 #include <vector>
 #include <compare>
-export module gengine.types:core;
+export module gengine.types:primitives;
 
 export
 namespace geng
