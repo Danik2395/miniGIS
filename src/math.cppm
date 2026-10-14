@@ -30,8 +30,8 @@ namespace geng::math
         double dy = segment_p0.y - segment_p1.y;
         double dx = segment_p0.x - segment_p1.x;
 
-        double a = dy;
-        double b = dx;
+        double a =  dy;
+        double b = -dx;
         double c = segment_p1.y * dx - segment_p1.x * dy;
 
         if (segment_p0 == segment_p1)

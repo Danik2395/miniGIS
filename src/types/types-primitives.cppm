@@ -36,7 +36,7 @@ namespace geng
     private:
         int64_t quantize_(double v) const
         {
-            return static_cast<int64_t>(std::round(v * EPSILON_COMPUTE));
+            return static_cast<int64_t>(std::round(v / EPSILON_COMPUTE));
         }
     };
 
