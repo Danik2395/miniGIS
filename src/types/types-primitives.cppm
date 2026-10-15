@@ -64,27 +64,27 @@ namespace geng
             y(p1.y - p0.y)
         {}
 
-        double operator*(Vec2 other_vec)
+        double operator*(Vec2 other_vec) const
         {
             return this->x * other_vec.x + this->y * other_vec.y;
         }
 
-        Vec2 operator*(double scalar)
+        Vec2 operator*(double scalar) const
         {
             return {this->x * scalar, this->y * scalar};
         }
 
-        Vec2 operator+(Vec2 other_vec)
+        Vec2 operator+(Vec2 other_vec) const
         {
             return {this->x + other_vec.x, this->y + other_vec.y};
         }
 
-        Vec2 operator-(Vec2 other_vec)
+        Vec2 operator-(Vec2 other_vec) const
         {
             return {this->x - other_vec.x, this->y - other_vec.y};
         }
 
-        double projection(Vec2 vec_projected)
+        double projection(Vec2 vec_projected) const
         {
             return (*this * vec_projected) / (*this * *this);
         }
@@ -99,6 +99,6 @@ namespace geng
     {
         double m[3][3];
 
-        Matrix3 operator*(const Matrix3& other);
+        Matrix3 operator*(const Matrix3& other) const;
     };
 }
