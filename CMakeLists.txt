@@ -17,7 +17,6 @@ add_library(${PROJECT_NAME}_core OBJECT)
 
 target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types.cppm
-    src/types/types-math.cppm
     src/types/types-primitives.cppm
     src/math.cppm
 )
