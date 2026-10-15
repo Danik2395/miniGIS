@@ -11,6 +11,8 @@ namespace geng
 {
     constexpr double EPSILON_COMPUTE = 1e-9;
 
+    struct Vec2;
+
     struct Point
     {
         double x, y;
@@ -32,6 +34,20 @@ namespace geng
         {
             return (*this <=> other_point) == 0;
         }
+
+        static Point max(Point p0, Point p1)
+        {
+            return p0 > p1 ? p0 : p1;
+        }
+
+        static Point min(Point p0, Point p1)
+        {
+            return p0 < p1 ? p0 : p1;
+        }
+
+        Point operator+(Vec2 vec) const;
+
+        Point operator-(Vec2 vec) const;
 
     private:
         int64_t quantize_(double v) const
@@ -101,4 +117,17 @@ namespace geng
 
         Matrix3 operator*(const Matrix3& other) const;
     };
+}
+
+namespace geng
+{
+    inline Point Point::operator+(Vec2 vec) const
+    {
+        return {this->x + vec.x, this->y + vec.y};
+    }
+
+    inline Point Point::operator-(Vec2 vec) const
+    {
+        return {this->x - vec.x, this->y - vec.y};
+    }
 }
