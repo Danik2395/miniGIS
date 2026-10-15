@@ -47,3 +47,14 @@ TEST(DistancePointToSegment, PointOutOfProjection)
             );
 }
 
+TEST(DistancePointToSegment, VerticalSegment)
+{
+    geng::Point target_p = {0, 15.8};
+    geng::Point line_p0  = {0, 1};
+    geng::Point line_p1  = {0, 10};
+
+    EXPECT_DOUBLE_EQ(
+            geng::math::calc_distance_point_to_segment(target_p, line_p0, line_p1),
+            5.8
+            );
+}
