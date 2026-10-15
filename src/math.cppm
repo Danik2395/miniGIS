@@ -34,9 +34,18 @@ namespace geng::math
         double b = -dx;
         double c = segment_p1.y * dx - segment_p1.x * dy;
 
-        if (segment_p0 == segment_p1)
+        geng::Vec2 u(segment_p0, p);
+        geng::Vec2 seg_guiding(segment_p0, segment_p1);
+
+        double projection_coeff = seg_guiding.projection(u);
+
+        if (segment_p0 == segment_p1 || projection_coeff < 0)
         {
-            return calc_distance_euclidean(p, segment_p0);
+            return geng::math::calc_distance_euclidean(p, segment_p0);
+        }
+        if (projection_coeff > 1)
+        {
+            return geng::math::calc_distance_euclidean(p, segment_p1);
         }
 
         return std::abs(a * p.x + b * p.y + c) / std::hypot(a, b);
