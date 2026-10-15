@@ -35,16 +35,6 @@ namespace geng
             return (*this <=> other_point) == 0;
         }
 
-        static Point max(Point p0, Point p1)
-        {
-            return p0 > p1 ? p0 : p1;
-        }
-
-        static Point min(Point p0, Point p1)
-        {
-            return p0 < p1 ? p0 : p1;
-        }
-
         Point operator+(Vec2 vec) const;
 
         Point operator-(Vec2 vec) const;
@@ -100,14 +90,14 @@ namespace geng
             return {this->x - other_vec.x, this->y - other_vec.y};
         }
 
-        double projection(Vec2 vec_projected) const
+        double length() const
         {
-            return (*this * vec_projected) / (*this * *this);
+            return std::hypot(this->x, this->y);
         }
 
-        static double abs(Vec2 vec)
+        double projection(Vec2 vec_projected) const
         {
-            return std::hypot(vec.x, vec.y);
+            return (*this * vec_projected) / this->length();
         }
     };
 

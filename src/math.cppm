@@ -16,6 +16,26 @@ namespace geng::math
         return std::abs(v0 - v1) < geng::EPSILON_COMPUTE;
     }
 
+    double projection_coeff(Vec2 vec_projecting, Vec2 vec_projected)
+    {
+        return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
+    }
+
+    double length(Vec2 vec)
+    {
+        return std::hypot(vec.x, vec.y);
+    }
+
+    Point max(Point p0, Point p1)
+    {
+        return p0 > p1 ? p0 : p1;
+    }
+
+    Point min(Point p0, Point p1)
+    {
+        return p0 < p1 ? p0 : p1;
+    }
+
     double calc_distance_euclidean(geng::Point p0, geng::Point p1)
     {
         double distance = std::pow(p0.x - p1.x, 2) +
@@ -27,17 +47,10 @@ namespace geng::math
                                           geng::Point segment_p0,
                                           geng::Point segment_p1)
     {
-        double dy = segment_p0.y - segment_p1.y;
-        double dx = segment_p0.x - segment_p1.x;
-
-        double a =  dy;
-        double b = -dx;
-        double c = segment_p1.y * dx - segment_p1.x * dy;
-
         geng::Vec2 u(segment_p0, p);
         geng::Vec2 seg_guiding(segment_p0, segment_p1);
 
-        double projection_coeff = seg_guiding.projection(u);
+        double projection_coeff = geng::math::projection_coeff(seg_guiding, u);
 
         if (segment_p0 == segment_p1 || projection_coeff < 0)
         {
@@ -48,6 +61,7 @@ namespace geng::math
             return geng::math::calc_distance_euclidean(p, segment_p1);
         }
 
-        return std::abs(a * p.x + b * p.y + c) / std::hypot(a, b);
+        geng::Point p_projection_on_segment = segment_p0 + seg_guiding * projection_coeff;
+        return geng::math::calc_distance_euclidean(p, p_projection_on_segment);
     }
 }
