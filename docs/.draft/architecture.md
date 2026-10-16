@@ -18,8 +18,8 @@ create Qt window.
 - get_cursor_world_pos
 
 ### part gengine:toolbox
-- measure_distance_on_selected
-- measure_area_on_selected
+- calc_distance_on_selected_objects
+- calc_area_on_selected_objects
 - find_target_to_snap
 - toggle_tool
 
