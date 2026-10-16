@@ -51,7 +51,7 @@ namespace geng
         std::vector<Point> points;
     };
 
-    struct Poligon
+    struct Polygon
     {
         std::vector<Point> outer;
         std::vector<std::vector<Point>> inner;
