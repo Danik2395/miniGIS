@@ -6,7 +6,7 @@ default:
     @just --list
 
 clean:
-    @rm -rf {{BUILD_DIR}} .cache
+    @rm -rf {{BUILD_DIR}} .cache Testing
 
 debug:
     @mkdir -p {{DEBUG_DIR}}
@@ -18,7 +18,7 @@ test-all: debug
     @ctest --test-dir {{TEST_DIR}} --output-on-failure
 
 test test_suite: debug
-    @ctest --test-dir {{TEST_DIR}} --output-on-failure -R "^{{test_suite}}/."
+    @ctest --test-dir {{TEST_DIR}} --output-on-failure -R "^{{test_suite}}\."
 
 testf test_full_name: debug
     @ctest --test-dir {{TEST_DIR}} --output-on-failure -R "^{{test_full_name}}$"
