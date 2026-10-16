@@ -1,5 +1,7 @@
 module;
 #include <cmath>
+#include <ranges>
+#include <algorithm>
 export module gengine.math;
 import gengine.types;
 
@@ -63,5 +65,33 @@ namespace geng::math
 
         geng::Point p_projection_on_segment = segment_p0 + seg_guiding * projection_coeff;
         return geng::math::calc_distance_euclidean(p, p_projection_on_segment);
+    }
+
+    double calc_area_polygon(geng::Polygon poly)
+    {
+        namespace views  = std::views;
+        namespace ranges = std::ranges;
+
+        auto outer_trapezoid_peaks = poly.outer | views::pairwise;
+
+        auto inner_trapezoid_peaks = poly.inner
+                                   | views::transform([](const auto& ring){ return ring | views::pairwise; })
+                                   | views::join;
+
+        auto area_below_segment = [](const auto& group) {
+            auto [p0, p1] = group;
+            return p0.x * p1.y - p0.y * p1.x;
+        };
+
+        auto areas_outer = outer_trapezoid_peaks | views::transform(area_below_segment);
+        auto areas_inner = inner_trapezoid_peaks | views::transform(area_below_segment);
+
+        const double result_area = std::ranges::fold_left(
+                areas_outer,
+                ranges::fold_left(areas_inner, 0.0, std::plus{}),
+                std::plus{}
+                );
+
+        return std::abs(result_area / 2);
     }
 }
