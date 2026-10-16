@@ -58,3 +58,27 @@ TEST(DistancePointToSegment, VerticalSegment)
             5.8
             );
 }
+
+TEST(AreaPolygon, NormalPolygon)
+{
+    geng::Polygon poly_only_outer = {{
+        {10, 0},
+        {10, 10},
+        {0, 10},
+        {0, 0}
+    }};
+    geng::Polygon poly_full = {{
+        {10, 0},
+        {10, 10},
+        {0, 10},
+        {0, 0}
+    }, {{
+        {0, 0},
+        {0, 5},
+        {5, 5},
+        {5, 0}}
+    }};
+
+    EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_only_outer), 100);
+    EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_full), 75);
+}
