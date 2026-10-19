@@ -94,4 +94,25 @@ namespace geng::math
 
         return std::abs(result_area / 2);
     }
+
+    enum class Orientation
+    {
+        LEFT,
+        RIGHT,
+        COLINEAR
+    };
+
+    Orientation orientation_point_segment(geng::Point p, geng::Point segment_p0, geng::Point segment_p1)
+    {
+        geng::Matrix3 orientation_matrix = {
+            geng::Vec2(segment_p0, segment_p1),
+            geng::Vec2(segment_p0, p)
+        };
+
+        double determinant = orientation_matrix.det();
+
+        if (determinant > 0) return Orientation::LEFT;
+        if (geng::math::is_zero(determinant)) return Orientation::COLINEAR;
+        return Orientation::RIGHT;
+    }
 }
