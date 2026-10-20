@@ -19,7 +19,7 @@ namespace geng
 
     struct Point
     {
-        double x, y;
+        double x = 0, y = 0;
 
         std::strong_ordering operator<=>(const Point& other_point) const
         {
@@ -63,7 +63,7 @@ namespace geng
 
     struct Vec2
     {
-        double x, y;
+        double x = 0, y = 0;
 
         Vec2() = default;
 
