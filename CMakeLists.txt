@@ -49,6 +49,7 @@ if(BUILD_TESTS)
     target_sources(${PROJECT_NAME}_tests PRIVATE FILE_SET CXX_MODULES FILES
         src/test/test.cppm
         src/test/test-math.cppm
+        src/test/test-types.cppm
     )
 
     target_link_libraries(${PROJECT_NAME}_tests PRIVATE
