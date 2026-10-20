@@ -167,6 +167,9 @@ namespace geng
         const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
               double& operator[](size_t i, size_t j)       { return m[i * 3 + j]; }
 
+        const double& operator[](size_t n) const { return m[n]; }
+              double& operator[](size_t n)       { return m[n]; }
+
         auto begin() const { return m.begin(); }
         auto end()   const { return m.end(); }
         auto begin()       { return m.begin(); }
