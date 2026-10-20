@@ -82,3 +82,17 @@ TEST(AreaPolygon, NormalPolygon)
     EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_only_outer), 100);
     EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_full), 75);
 }
+
+TEST(OrientationPointSegment, Test)
+{
+    geng::Point segment_p0(5, 5);
+    geng::Point segment_p1(20, 10);
+
+    geng::Point to_left_point(8, 10);
+    geng::Point to_right_point(8, -10);
+    geng::Point colinear_point(11, 7);
+
+    EXPECT_EQ(geng::math::orientation_point_segment(to_left_point, segment_p0, segment_p1), geng::math::Orientation::LEFT);
+    EXPECT_EQ(geng::math::orientation_point_segment(to_right_point, segment_p0, segment_p1), geng::math::Orientation::RIGHT);
+    EXPECT_EQ(geng::math::orientation_point_segment(colinear_point, segment_p0, segment_p1), geng::math::Orientation::COLINEAR);
+}
