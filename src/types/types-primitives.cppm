@@ -93,6 +93,15 @@ namespace geng
             y(p1.y - p0.y)
         {}
 
+        Vec2(std::initializer_list<geng::Point> list) :
+            Vec2(
+                    list.size() > 0 ? *list.begin() : geng::Point{},
+                    list.size() > 1 ? *list.begin() : geng::Point{}
+                )
+        {
+            assert(list.size() <= 2 && "Vec2: too many arguments in initialization list.");
+        }
+
         // добавить лист для по точкам
 
         double operator*(Vec2 other_vec) const

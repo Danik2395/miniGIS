@@ -42,7 +42,7 @@ TEST(TypesConstructors, Vec2Constructor)
     geng::Vec2 vec_vec(vec_args);
     geng::Vec2 vec_vec_list = {vec_args};
     geng::Vec2 vec_point(p0, p1);
-    geng::Vec2 vec_point_list{p0, p1};
+    geng::Vec2 vec_point_list = {p0, p1};
 
     EXPECT_DOUBLE_EQ(vec_default.x, 0);
     EXPECT_DOUBLE_EQ(vec_default.y, 0);
