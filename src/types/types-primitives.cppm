@@ -50,6 +50,25 @@ namespace geng
         }
     };
 
+    struct Segment
+    {
+        geng::Point p0;
+        geng::Point p1;
+
+        Segment() = default;
+
+        explicit Segment(geng::Point p0, geng::Point p1) : p0(p0), p1(p1) {}
+
+        Segment(std::initializer_list<geng::Point> list) :
+            Segment(
+                    list.size() > 0 ?  *list.begin()      : geng::Point{},
+                    list.size() > 1 ? *(list.begin() + 1) : geng::Point{}
+                   )
+        {
+            assert(list.size() <= 2 && "Segment: too many arguments in initialization list.");
+        }
+    };
+
     struct LineString
     {
         std::vector<Point> points;
@@ -73,6 +92,8 @@ namespace geng
             x(p1.x - p0.x),
             y(p1.y - p0.y)
         {}
+
+        // добавить лист для по точкам
 
         double operator*(Vec2 other_vec) const
         {
