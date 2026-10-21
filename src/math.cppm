@@ -67,7 +67,7 @@ namespace geng::math
         return geng::math::calc_distance_euclidean(p, p_projection_on_segment);
     }
 
-    double calc_area_polygon(geng::Polygon poly)
+    double calc_area_polygon(const geng::Polygon& poly)
     {
         namespace views  = std::views;
         namespace ranges = std::ranges;
