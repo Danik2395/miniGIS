@@ -58,6 +58,12 @@ TEST(TypesConstructors, Vec2Constructor)
 
     EXPECT_DOUBLE_EQ(vec_vec_list.x, x);
     EXPECT_DOUBLE_EQ(vec_vec_list.y, y);
+
+    EXPECT_DOUBLE_EQ(vec_point.x, x);
+    EXPECT_DOUBLE_EQ(vec_point.y, y);
+
+    EXPECT_DOUBLE_EQ(vec_point_list.x, x);
+    EXPECT_DOUBLE_EQ(vec_point_list.y, y);
 }
 
 TEST(TypesConstructors, Matrix3Constructor)
