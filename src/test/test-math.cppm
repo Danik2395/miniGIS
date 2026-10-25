@@ -113,6 +113,8 @@ TEST(IntersectionPointOfSegments, CheckIntersection)
 
     EXPECT_EQ(geng::math::is_intersect(seg0, seg_nointersect), false);
     EXPECT_EQ(geng::math::is_intersect(seg0, seg_nointersect_parallel), false);
+
+    EXPECT_EQ(geng::math::is_intersect(seg0, seg0), true);
 }
 
 TEST(IntersectionPointOfSegments, CalcIntersectionPoint)
@@ -124,14 +126,16 @@ TEST(IntersectionPointOfSegments, CalcIntersectionPoint)
     geng::Segment seg_vertical0  = {{2, -2}, {2, 8}};
     geng::Segment seg_vertical1  = {{3, 3}, {3, 7}};
 
-    EXPECT_EQ(geng::math::calc_intersection_point(seg0, seg1), geng::Point(2, 3));
-    EXPECT_EQ(geng::math::calc_intersection_point(seg0, seg2), geng::Point(3, 5));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg0, seg1)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg0, seg2)), geng::Point(3, 5));
 
-    EXPECT_EQ(geng::math::calc_intersection_point(seg0, seg_horisontal), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg0, seg_horisontal)), geng::Point(2, 3));
 
-    EXPECT_EQ(geng::math::calc_intersection_point(seg0, seg_vertical0), geng::Point(2, 3));
-    EXPECT_EQ(geng::math::calc_intersection_point(seg_vertical0, seg0), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg0, seg_vertical0)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_vertical0, seg0)), geng::Point(2, 3));
 
-    EXPECT_EQ(geng::math::calc_intersection_point(seg_vertical0, seg_horisontal), geng::Point(2, 3));
-    EXPECT_EQ(geng::math::calc_intersection_point(seg_horisontal, seg_vertical1), geng::Point(3, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_vertical0, seg_horisontal)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_horisontal, seg_vertical1)), geng::Point(3, 3));
+
+    EXPECT_EQ(std::get<geng::Segment>(geng::math::calc_intersection(seg0, seg0)), seg0);
 }
