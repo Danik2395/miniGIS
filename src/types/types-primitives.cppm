@@ -67,6 +67,11 @@ namespace geng
         {
             assert(list.size() <= 2 && "Segment: too many arguments in initialization list.");
         }
+
+        bool operator==(const Segment& other_seg) const
+        {
+            return p0 == other_seg.p0 && p1 == other_seg.p1;
+        }
     };
 
     struct LineString
