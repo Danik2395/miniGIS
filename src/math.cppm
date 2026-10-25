@@ -20,6 +20,12 @@ namespace geng::math
         return std::abs(v0 - v1) < geng::EPSILON_COMPUTE;
     }
 
+    bool is_within(double val, double min, double max)
+    {
+        return (val > min || geng::math::is_equal(val, min)) &&
+               (val < max || geng::math::is_equal(val, max));
+    }
+
     double projection_coeff(Vec2 vec_projecting, Vec2 vec_projected)
     {
         return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
@@ -28,6 +34,11 @@ namespace geng::math
     double length(Vec2 vec)
     {
         return std::hypot(vec.x, vec.y);
+    }
+
+    double cross(Vec2 vec0, Vec2 vec1)
+    {
+        return vec0.x * vec1.y - vec1.x * vec0.y;
     }
 
     bool is_zero(geng::Vec2 vec)
