@@ -4,6 +4,7 @@ module;
 #include <ranges>
 #include <algorithm>
 #include <utility>
+#include <variant>
 export module gengine.math;
 import gengine.types;
 
@@ -181,86 +182,74 @@ namespace geng::math
         return is_point_end_of_segment(p, seg.p0, seg.p1);
     }
 
+    using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
+
+    SegmentsIntersection calc_intersection(geng::Segment seg0, geng::Segment seg1)
+    {
+        geng::Vec2 vec_seg0                  = {seg0.p0, seg0.p1};
+        geng::Vec2 vec_seg1                  = {seg1.p0, seg1.p1};
+        geng::Vec2 vec_seg0_begin_seg1_begin = {seg0.p0, seg1.p0};
+
+        double cross_seg0_seg1 = geng::math::cross(vec_seg0, vec_seg1);
+
+        if (!geng::math::is_equal(cross_seg0_seg1, 0))
+        {
+            double cross_begins_seg0 = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg1);
+            double cross_begins_seg1 = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg0);
+
+            // M(t), N(u) - are points of intersection on seg0 and seg1
+            // M(t) = N(u)
+            // x1 + t * p_x = x3 + u * q_x
+            // y1 + t * p_y = y3 + u * q_y
+            // Solve system to get t and u
+            double coeff_seg0 = cross_begins_seg0 / cross_seg0_seg1;
+            double coeff_seg1 = cross_begins_seg1 / cross_seg0_seg1;
+
+            if (!geng::math::is_within(coeff_seg0, 0.0, 1.0) ||
+                !geng::math::is_within(coeff_seg1, 0.0, 1.0))
+            {
+                return std::monostate();
+            }
+
+            geng::Point intersection_point = seg0.p0 + vec_seg0 * coeff_seg0;
+
+            return intersection_point;
+        }
+
+        geng::Vec2 vec_seg0_begin_seg1_end = {seg0.p0, seg1.p1};
+
+        double cross_to_check_segments_on_one_line = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg0_begin_seg1_end);
+
+        if (!geng::math::is_equal(cross_to_check_segments_on_one_line, 0))
+        {
+            return std::monostate();
+        }
+
+        double coeff0 = geng::math::projection_coeff(vec_seg0, vec_seg0_begin_seg1_begin);
+        double coeff1 = geng::math::projection_coeff(vec_seg0, vec_seg0_begin_seg1_end);
+
+        double start_coeff = std::max(0.0, std::min(coeff0, coeff1));
+        double end_coeff   = std::min(1.0, std::max(coeff0, coeff1));
+
+        if (start_coeff > end_coeff)
+        {
+            return std::monostate();
+        }
+
+        geng::Point intersection_point_begin = seg0.p0 + vec_seg0 * start_coeff;
+
+        if (geng::math::is_equal(start_coeff, end_coeff))
+        {
+            return intersection_point_begin;
+        }
+
+        geng::Point intersection_point_end = seg0.p0 + vec_seg0 * end_coeff;
+
+        return geng::Segment(intersection_point_begin, intersection_point_end);
+    }
+
     bool is_intersect(geng::Segment seg0, geng::Segment seg1)
     {
-        using Orient = geng::math::Orientation;
-
-        struct CheckOrientGroup {
-            Orient orient;
-            geng::Point point;
-            geng::Segment seg;
-        };
-
-        std::array checks = {
-            CheckOrientGroup{orientation_point_segment(seg0.p0, seg1), seg0.p0, seg1},
-            CheckOrientGroup{orientation_point_segment(seg0.p1, seg1), seg0.p1, seg1},
-            CheckOrientGroup{orientation_point_segment(seg1.p0, seg0), seg1.p0, seg0},
-            CheckOrientGroup{orientation_point_segment(seg1.p1, seg0), seg1.p1, seg0},
-        };
-
-        bool has_collinear = std::ranges::any_of(checks, [](const auto& group){ return group.orient == Orient::COLLINEAR; });
-
-        // Could be collinear without intersecting
-        if (!has_collinear && (checks[0].orient != checks[1].orient && checks[2].orient != checks[3].orient)) return true;
-
-        bool has_intersection =
-            std::ranges::any_of(checks, [](const auto& group){ return geng::math::is_point_on_segment(group.point, group.seg); });
-
-        if (has_intersection) return true;
-
-        return false;
-    }
-
-    geng::Point calc_intersection_point(geng::Segment seg0, geng::Segment seg1)
-    {
-        assert(is_intersect(seg0, seg1) && "calc_intersection_point: segments have no intersection points.");
-
-        geng::math::make_segment_left_to_right(seg0);
-        geng::math::make_segment_left_to_right(seg1);
-
-        double x1 = seg0.p0.x, y1 = seg0.p0.y;
-        double x2 = seg0.p1.x, y2 = seg0.p1.y;
-
-        double x3 = seg1.p0.x, y3 = seg1.p0.y;
-        double x4 = seg1.p1.x, y4 = seg1.p1.y;
-
-        double k1 = (y2 - y1) / (x2 - x1);
-        double k2 = (y4 - y3) / (x4 - x3);
-
-        if (geng::math::is_equal(x1, x2)) // seg0 vertical: k1 -> inf
-        {
-            double y_on_seg0 = k2 * (x1 - x3) + y3;
-            return {x1, y_on_seg0};
-        }
-        if (geng::math::is_equal(x3, x4))
-        {
-            double y_on_seg1 = k1 * (x3 - x1) + y1;
-            return {x3, y_on_seg1};
-        }
-
-        if (geng::math::is_equal(k1, k2))
-        {
-            auto check_pair_left_point  = geng::math::is_point_end_of_segment(seg0.p0, seg1);
-            auto check_pair_right_point = geng::math::is_point_end_of_segment(seg0.p1, seg1);
-
-            if (check_pair_left_point.first)  return check_pair_left_point.second;
-            if (check_pair_right_point.first) return check_pair_right_point.second;
-        }
-
-        double x_intersection = (k1 * x1 - k2 * x3 + y3 -y1) / (k1 - k2);
-        double y_intersection = k1 * (x_intersection - x1) + y1;
-
-        return {x_intersection, y_intersection};
-    }
-
-    std::pair<bool, geng::Point> calc_intersection_point_with_check(geng::Segment seg0, geng::Segment seg1)
-    {
-        bool has_intersect = geng::math::is_intersect(seg0, seg1);
-
-        if (!has_intersect) return {has_intersect, {}};
-
-        geng::Point intersection_point = calc_intersection_point(seg0, seg1);
-
-        return {has_intersect, intersection_point};
+        return !std::holds_alternative<std::monostate>(geng::math::calc_intersection(seg0, seg1));
     }
 }
