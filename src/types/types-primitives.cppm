@@ -23,15 +23,15 @@ namespace geng
 
         std::strong_ordering operator<=>(const Point& other_p) const
         {
-            assert(!std::isnan(this->x) && !std::isnan(other_p.x) &&
-                   !std::isnan(this->y) && !std::isnan(other_p.y) &&
+            assert(!std::isnan(x) && !std::isnan(other_p.x) &&
+                   !std::isnan(y) && !std::isnan(other_p.y) &&
                     "operator<=>: NaN is not allowed.");
 
-            if (auto cmp = quantize_(this->x) <=> quantize_(other_p.x);
+            if (auto cmp = quantize_(x) <=> quantize_(other_p.x);
                     cmp != 0)
                 return cmp;
 
-            return quantize_(this->y) <=> quantize_(other_p.y);
+            return quantize_(y) <=> quantize_(other_p.y);
         }
 
         bool operator==(const Point& other_p) const
@@ -109,32 +109,32 @@ namespace geng
 
         double operator*(Vec2 other_vec) const
         {
-            return this->x * other_vec.x + this->y * other_vec.y;
+            return x * other_vec.x + y * other_vec.y;
         }
 
         Vec2 operator*(double scalar) const
         {
-            return {this->x * scalar, this->y * scalar};
+            return {x * scalar, y * scalar};
         }
 
         Vec2 operator+(Vec2 other_vec) const
         {
-            return {this->x + other_vec.x, this->y + other_vec.y};
+            return {x + other_vec.x, y + other_vec.y};
         }
 
         Vec2 operator-(Vec2 other_vec) const
         {
-            return {this->x - other_vec.x, this->y - other_vec.y};
+            return {x - other_vec.x, y - other_vec.y};
         }
 
         double length() const
         {
-            return std::hypot(this->x, this->y);
+            return std::hypot(x, y);
         }
 
         double projection(Vec2 vec_projected) const
         {
-            return (*this * vec_projected) / this->length();
+            return (*this * vec_projected) / length();
         }
     };
 
@@ -252,7 +252,7 @@ namespace geng
         Matrix3 binary_predicate_for_each_mtrx_elem_(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
         {
             Matrix3 result_mtrx;
-            std::transform(this->begin(), this->end(), other_mtrx.begin(), result_mtrx.begin(), pred);
+            std::transform(begin(), end(), other_mtrx.begin(), result_mtrx.begin(), pred);
             return result_mtrx;
         }
     };
