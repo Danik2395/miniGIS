@@ -67,9 +67,9 @@ namespace geng::math
     [[nodiscard]]
     double distance_euclidean(geng::Point p0, geng::Point p1)
     {
-        double distance = std::pow(p0.x - p1.x, 2) +
-                          std::pow(p0.y - p1.y, 2);
-        return std::sqrt(distance);
+        double dx = p0.x - p1.x;
+        double dy = p0.y - p1.y;
+        return std::sqrt(dx * dx + dy * dy);
     }
 
     [[nodiscard]]
