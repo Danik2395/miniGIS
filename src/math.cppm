@@ -121,15 +121,13 @@ namespace geng::math
 
     Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        geng::Matrix3 orientation_matrix = {
-            geng::Vec2(seg_p0, seg_p1),
-            geng::Vec2(seg_p0, p)
-        };
+        geng::Vec2 vec_seg_guiding  = {seg_p0, seg_p1};
+        geng::Vec2 vec_seg_to_point = {seg_p0, p};
 
-        double determinant = orientation_matrix.det();
+        double cross_orientation = geng::math::cross(vec_seg_guiding, vec_seg_to_point);
 
-        if (determinant > 0) return Orientation::LEFT;
-        if (geng::math::is_zero(determinant)) return Orientation::COLLINEAR;
+        if (cross_orientation > 0)                  return Orientation::LEFT;
+        if (geng::math::is_zero(cross_orientation)) return Orientation::COLLINEAR;
         return Orientation::RIGHT;
     }
 
