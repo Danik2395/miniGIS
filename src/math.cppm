@@ -158,7 +158,7 @@ namespace geng::math
         return proj_coeff_on_guiding >= 0 && proj_coeff_on_guiding <= 1;
     }
 
-    bool is_point_on_segment(geng::Point p, geng::Segment seg)
+    bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     {
         return is_point_on_segment(p, seg.p0, seg.p1);
     }
@@ -170,7 +170,7 @@ namespace geng::math
         return {false, {}};
     }
 
-    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Segment seg)
+    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, const geng::Segment& seg)
     {
         return is_point_end_of_segment(p, seg.p0, seg.p1);
     }
@@ -244,7 +244,7 @@ namespace geng::math
         return geng::Segment(intersection_point_begin, intersection_point_end);
     }
 
-    bool is_intersect(geng::Segment seg1, geng::Segment seg2)
+    bool is_intersect(const geng::Segment& seg1, const geng::Segment& seg2)
     {
         return !std::holds_alternative<std::monostate>(geng::math::intersection(seg1, seg2));
     }
