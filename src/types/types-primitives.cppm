@@ -20,10 +20,11 @@ namespace geng
 
     struct Vec2;
 
-    struct Point
+    struct [[nodiscard]] Point
     {
         double x = 0, y = 0;
 
+        [[nodiscard]]
         std::strong_ordering operator<=>(const Point& other_p) const
         {
             assert(!std::isnan(x) && !std::isnan(other_p.x) &&
@@ -37,13 +38,16 @@ namespace geng
             return quantize_(y) <=> quantize_(other_p.y);
         }
 
+        [[nodiscard]]
         bool operator==(const Point& other_p) const
         {
             return (*this <=> other_p) == 0;
         }
 
+        [[nodiscard]]
         Point operator+(Vec2 vec) const;
 
+        [[nodiscard]]
         Point operator-(Vec2 vec) const;
 
     private:
@@ -53,7 +57,7 @@ namespace geng
         }
     };
 
-    struct Segment
+    struct [[nodiscard]] Segment
     {
         geng::Point p0;
         geng::Point p1;
@@ -71,24 +75,25 @@ namespace geng
             assert(list.size() <= 2 && "Segment: too many arguments in initialization list.");
         }
 
+        [[nodiscard]]
         bool operator==(const Segment& other_seg) const
         {
             return p0 == other_seg.p0 && p1 == other_seg.p1;
         }
     };
 
-    struct LineString
+    struct [[nodiscard]] LineString
     {
         std::vector<Point> points;
     };
 
-    struct Polygon
+    struct [[nodiscard]] Polygon
     {
         std::vector<Point> outer;
         std::vector<std::vector<Point>> inner;
     };
 
-    struct Vec2
+    struct [[nodiscard]] Vec2
     {
         double x = 0, y = 0;
 
@@ -110,38 +115,44 @@ namespace geng
             assert(point_sequence.size() <= 2 && "Vec2: too many arguments in initialization list.");
         }
 
+        [[nodiscard]]
         double operator*(Vec2 other_vec) const
         {
             return x * other_vec.x + y * other_vec.y;
         }
 
+        [[nodiscard]]
         Vec2 operator*(double scalar) const
         {
             return {x * scalar, y * scalar};
         }
 
+        [[nodiscard]]
         Vec2 operator+(Vec2 other_vec) const
         {
             return {x + other_vec.x, y + other_vec.y};
         }
 
+        [[nodiscard]]
         Vec2 operator-(Vec2 other_vec) const
         {
             return {x - other_vec.x, y - other_vec.y};
         }
 
+        [[nodiscard]]
         double length() const
         {
             return std::hypot(x, y);
         }
 
+        [[nodiscard]]
         double projection(Vec2 vec_projected) const
         {
             return (*this * vec_projected) / length();
         }
     };
 
-    struct Matrix3
+    struct [[nodiscard]] Matrix3
     {
         enum class InitType
         {
@@ -200,17 +211,18 @@ namespace geng
             assert(vec_sequense.size() <= 3 && "Matrix3: too many arguments in inidializion list.");
         }
 
-        const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
-              double& operator[](size_t i, size_t j)       { return m[i * 3 + j]; }
+        [[nodiscard]] const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
+        [[nodiscard]]       double& operator[](size_t i, size_t j)       { return m[i * 3 + j]; }
 
-        const double& operator[](size_t n) const { return m[n]; }
-              double& operator[](size_t n)       { return m[n]; }
+        [[nodiscard]] const double& operator[](size_t n) const { return m[n]; }
+        [[nodiscard]]       double& operator[](size_t n)       { return m[n]; }
 
-        auto begin() const { return m.begin(); }
-        auto end()   const { return m.end(); }
-        auto begin()       { return m.begin(); }
-        auto end()         { return m.end(); }
+        [[nodiscard]] auto begin() const { return m.begin(); }
+        [[nodiscard]] auto end()   const { return m.end(); }
+        [[nodiscard]] auto begin()       { return m.begin(); }
+        [[nodiscard]] auto end()         { return m.end(); }
 
+        [[nodiscard]]
         Matrix3 operator*(const Matrix3& other_mtrx) const
         {
             Matrix3 res;
@@ -226,6 +238,7 @@ namespace geng
             return res;
         }
 
+        [[nodiscard]]
         Vec2 operator*(const Vec2& vec) const
         {
             return {
@@ -234,15 +247,17 @@ namespace geng
             };
         }
 
+        [[nodiscard]]
         Matrix3 operator*(double scalar) const
         {
             Matrix3 scalar_matrix(scalar);
             return binary_predicate_for_each_mtrx_elem_(scalar_matrix, std::multiplies{});
         }
 
-        Matrix3 operator+(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::plus{}); }
-        Matrix3 operator-(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::minus{}); }
+        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::plus{}); }
+        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::minus{}); }
 
+        [[nodiscard]]
         double det() const
         {
             // On the third row
