@@ -31,11 +31,11 @@ namespace geng
                    !std::isnan(y) && !std::isnan(other_p.y) &&
                     "operator<=>: NaN is not allowed.");
 
-            if (auto cmp = quantize_(x) <=> quantize_(other_p.x);
+            if (auto cmp = quantize(x) <=> quantize(other_p.x);
                     cmp != 0)
                 return cmp;
 
-            return quantize_(y) <=> quantize_(other_p.y);
+            return quantize(y) <=> quantize(other_p.y);
         }
 
         [[nodiscard]]
@@ -51,7 +51,7 @@ namespace geng
         Point operator-(Vec2 vec) const;
 
     private:
-        int64_t quantize_(double v) const
+        int64_t quantize(double v) const
         {
             return static_cast<int64_t>(std::round(v / EPSILON_COMPUTE));
         }
@@ -251,11 +251,11 @@ namespace geng
         Matrix3 operator*(double scalar) const
         {
             Matrix3 scalar_matrix(scalar);
-            return binary_predicate_for_each_mtrx_elem_(scalar_matrix, std::multiplies{});
+            return predicate_for_each(scalar_matrix, std::multiplies{});
         }
 
-        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::plus{}); }
-        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::minus{}); }
+        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return predicate_for_each(other_mtrx, std::plus{}); }
+        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return predicate_for_each(other_mtrx, std::minus{}); }
 
         [[nodiscard]]
         double det() const
@@ -267,7 +267,7 @@ namespace geng
         }
 
     private:
-        Matrix3 binary_predicate_for_each_mtrx_elem_(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
+        Matrix3 predicate_for_each(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
         {
             Matrix3 result_mtrx;
             std::transform(begin(), end(), other_mtrx.begin(), result_mtrx.begin(), pred);
