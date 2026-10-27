@@ -8,6 +8,9 @@ module;
 #include <compare>
 #include <algorithm>
 #include <ranges>
+#include <array>
+#include <concepts>
+#include <cstddef>
 export module gengine.types:primitives;
 
 export

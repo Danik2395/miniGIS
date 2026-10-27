@@ -1,6 +1,7 @@
 module;
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <variant>
 export module geotest:math;
 import gengine.types;
 import gengine.math;

@@ -5,6 +5,7 @@ module;
 #include <algorithm>
 #include <utility>
 #include <variant>
+#include <functional>
 export module gengine.math;
 import gengine.types;
 
