@@ -179,11 +179,11 @@ namespace geng
             assert(list.size() <= 9 && "Matrix3: too many arguments in inidializion list.");
         }
 
-        explicit Matrix3(geng::Vec2 vec0, geng::Vec2 vec1 = {}, geng::Vec2 vec2 = {})
+        explicit Matrix3(geng::Vec2 vec1, geng::Vec2 vec2 = {}, geng::Vec2 vec3 = {})
         {
             m = {
-                vec0.x, vec1.x, vec2.x,
-                vec0.y, vec1.y, vec2.y,
+                vec1.x, vec2.x, vec3.x,
+                vec1.y, vec2.y, vec3.y,
                 0,      0,      1
             };
         }

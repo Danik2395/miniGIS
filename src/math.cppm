@@ -16,9 +16,9 @@ namespace geng::math
         return std::abs(v) < geng::EPSILON_COMPUTE;
     }
 
-    bool is_equal(double v0, double v1)
+    bool is_equal(double v1, double v2)
     {
-        return std::abs(v0 - v1) < geng::EPSILON_COMPUTE;
+        return std::abs(v1 - v2) < geng::EPSILON_COMPUTE;
     }
 
     bool is_within(double val, double min, double max)
@@ -37,9 +37,9 @@ namespace geng::math
         return std::hypot(vec.x, vec.y);
     }
 
-    double cross(Vec2 vec0, Vec2 vec1)
+    double cross(Vec2 vec1, Vec2 vec2)
     {
-        return vec0.x * vec1.y - vec1.x * vec0.y;
+        return vec1.x * vec2.y - vec2.x * vec1.y;
     }
 
     bool is_zero(geng::Vec2 vec)
@@ -47,14 +47,14 @@ namespace geng::math
         return geng::math::is_zero(geng::math::length(vec));
     }
 
-    Point max(Point p0, Point p1)
+    Point max(Point p1, Point p2)
     {
-        return p0 > p1 ? p0 : p1;
+        return p1 > p2 ? p1 : p2;
     }
 
-    Point min(Point p0, Point p1)
+    Point min(Point p1, Point p2)
     {
-        return p0 < p1 ? p0 : p1;
+        return p1 < p2 ? p1 : p2;
     }
 
     double calc_distance_euclidean(geng::Point p0, geng::Point p1)
@@ -184,72 +184,72 @@ namespace geng::math
 
     using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
 
-    SegmentsIntersection calc_intersection(geng::Segment seg0, geng::Segment seg1)
+    SegmentsIntersection calc_intersection(geng::Segment seg1, geng::Segment seg2)
     {
-        geng::Vec2 vec_seg0                  = {seg0.p0, seg0.p1};
         geng::Vec2 vec_seg1                  = {seg1.p0, seg1.p1};
-        geng::Vec2 vec_seg0_begin_seg1_begin = {seg0.p0, seg1.p0};
+        geng::Vec2 vec_seg2                  = {seg2.p0, seg2.p1};
+        geng::Vec2 vec_seg1_begin_seg2_begin = {seg1.p0, seg2.p0};
 
-        double cross_seg0_seg1 = geng::math::cross(vec_seg0, vec_seg1);
+        double cross_seg1_seg2 = geng::math::cross(vec_seg1, vec_seg2);
 
-        if (!geng::math::is_equal(cross_seg0_seg1, 0))
+        if (!geng::math::is_equal(cross_seg1_seg2, 0))
         {
-            double cross_begins_seg0 = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg1);
-            double cross_begins_seg1 = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg0);
+            double cross_begins_seg1 = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg2);
+            double cross_begins_seg2 = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg1);
 
-            // M(t), N(u) - are points of intersection on seg0 and seg1
+            // M(t), N(u) - are points of intersection on seg1 and seg2
             // M(t) = N(u)
             // x1 + t * p_x = x3 + u * q_x
             // y1 + t * p_y = y3 + u * q_y
             // Solve system to get t and u
-            double coeff_seg0 = cross_begins_seg0 / cross_seg0_seg1;
-            double coeff_seg1 = cross_begins_seg1 / cross_seg0_seg1;
+            double coeff_seg1 = cross_begins_seg1 / cross_seg1_seg2;
+            double coeff_seg2 = cross_begins_seg2 / cross_seg1_seg2;
 
-            if (!geng::math::is_within(coeff_seg0, 0.0, 1.0) ||
-                !geng::math::is_within(coeff_seg1, 0.0, 1.0))
+            if (!geng::math::is_within(coeff_seg1, 0.0, 1.0) ||
+                !geng::math::is_within(coeff_seg2, 0.0, 1.0))
             {
                 return std::monostate();
             }
 
-            geng::Point intersection_point = seg0.p0 + vec_seg0 * coeff_seg0;
+            geng::Point intersection_point = seg1.p0 + vec_seg1 * coeff_seg1;
 
             return intersection_point;
         }
 
-        geng::Vec2 vec_seg0_begin_seg1_end = {seg0.p0, seg1.p1};
+        geng::Vec2 vec_seg1_begin_seg2_end = {seg1.p0, seg2.p1};
 
-        double cross_to_check_segments_on_one_line = geng::math::cross(vec_seg0_begin_seg1_begin, vec_seg0_begin_seg1_end);
+        double cross_to_check_segments_on_one_line = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg1_begin_seg2_end);
 
         if (!geng::math::is_equal(cross_to_check_segments_on_one_line, 0))
         {
             return std::monostate();
         }
 
-        double coeff0 = geng::math::projection_coeff(vec_seg0, vec_seg0_begin_seg1_begin);
-        double coeff1 = geng::math::projection_coeff(vec_seg0, vec_seg0_begin_seg1_end);
+        double coeff1 = geng::math::projection_coeff(vec_seg1, vec_seg1_begin_seg2_begin);
+        double coeff2 = geng::math::projection_coeff(vec_seg1, vec_seg1_begin_seg2_end);
 
-        double start_coeff = std::max(0.0, std::min(coeff0, coeff1));
-        double end_coeff   = std::min(1.0, std::max(coeff0, coeff1));
+        double start_coeff = std::max(0.0, std::min(coeff1, coeff2));
+        double end_coeff   = std::min(1.0, std::max(coeff1, coeff2));
 
         if (start_coeff > end_coeff)
         {
             return std::monostate();
         }
 
-        geng::Point intersection_point_begin = seg0.p0 + vec_seg0 * start_coeff;
+        geng::Point intersection_point_begin = seg1.p0 + vec_seg1 * start_coeff;
 
         if (geng::math::is_equal(start_coeff, end_coeff))
         {
             return intersection_point_begin;
         }
 
-        geng::Point intersection_point_end = seg0.p0 + vec_seg0 * end_coeff;
+        geng::Point intersection_point_end = seg1.p0 + vec_seg1 * end_coeff;
 
         return geng::Segment(intersection_point_begin, intersection_point_end);
     }
 
-    bool is_intersect(geng::Segment seg0, geng::Segment seg1)
+    bool is_intersect(geng::Segment seg1, geng::Segment seg2)
     {
-        return !std::holds_alternative<std::monostate>(geng::math::calc_intersection(seg0, seg1));
+        return !std::holds_alternative<std::monostate>(geng::math::calc_intersection(seg1, seg2));
     }
 }

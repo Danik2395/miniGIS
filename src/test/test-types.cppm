@@ -80,11 +80,11 @@ TEST(TypesConstructors, Matrix3Constructor)
     geng::Matrix3 matrix_full(m0);
     geng::Matrix3 matrix_diagonal(m0, geng::Matrix3::InitType::Diagonal);
 
-    geng::Vec2 vec0(1, 4);
-    geng::Vec2 vec1(2, 5);
-    geng::Vec2 vec2(3, 6);
-    geng::Matrix3 matrix_vec(vec0, vec1, vec2);
-    geng::Matrix3 matrix_vec_list = {vec0, vec1, vec2};
+    geng::Vec2 vec1(1, 4);
+    geng::Vec2 vec2(2, 5);
+    geng::Vec2 vec3(3, 6);
+    geng::Matrix3 matrix_vec(vec1, vec2, vec3);
+    geng::Matrix3 matrix_vec_list = {vec1, vec2, vec3};
 
     const auto expect_matrix = [](const geng::Matrix3& matrix,
                                   double v0, double v1, double v2,
