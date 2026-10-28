@@ -73,24 +73,35 @@ namespace geng::math
     }
 
     [[nodiscard]]
-    double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    double distance(geng::Point p, const geng::Segment& seg)
     {
-        geng::Vec2 vec_seg_to_point(seg_p0, p);
-        geng::Vec2 vec_seg_guiding(seg_p0, seg_p1);
+        if (geng::math::is_degrade(seg))
+        {
+            return geng::math::distance_euclidean(seg.p0, seg.p1);
+        }
+
+        geng::Vec2 vec_seg_to_point(seg.p0, p);
+        geng::Vec2 vec_seg_guiding(seg.p0, seg.p1);
 
         double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
 
-        if (seg_p0 == seg_p1 || proj_coeff_on_guiding < 0)
+        if (seg.p0 == seg.p1 || proj_coeff_on_guiding < 0)
         {
-            return geng::math::distance_euclidean(p, seg_p0);
+            return geng::math::distance_euclidean(p, seg.p0);
         }
         if (proj_coeff_on_guiding > 1)
         {
-            return geng::math::distance_euclidean(p, seg_p1);
+            return geng::math::distance_euclidean(p, seg.p1);
         }
 
-        geng::Point p_projection_on_segment = seg_p0 + vec_seg_guiding * proj_coeff_on_guiding;
+        geng::Point p_projection_on_segment = seg.p0 + vec_seg_guiding * proj_coeff_on_guiding;
         return geng::math::distance_euclidean(p, p_projection_on_segment);
+    }
+
+    [[nodiscard]]
+    double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    {
+        return distance(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
@@ -129,10 +140,10 @@ namespace geng::math
         COLLINEAR
     };
 
-    Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    Orientation orientation(geng::Point p, const geng::Segment& seg)
     {
-        geng::Vec2 vec_seg_guiding  = {seg_p0, seg_p1};
-        geng::Vec2 vec_seg_to_point = {seg_p0, p};
+        geng::Vec2 vec_seg_guiding  = {seg.p0, seg.p1};
+        geng::Vec2 vec_seg_to_point = {seg.p0, p};
 
         double cross_orientation = geng::math::cross(vec_seg_guiding, vec_seg_to_point);
 
@@ -141,25 +152,25 @@ namespace geng::math
         return Orientation::RIGHT;
     }
 
-    Orientation orientation(geng::Point p, const geng::Segment& seg)
+    Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return orientation(p, seg.p0, seg.p1);
+        return orientation(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
-    bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     {
-        if (orientation(p, seg_p0, seg_p1) != geng::math::Orientation::COLLINEAR)
+        if (orientation(p, seg.p0, seg.p1) != geng::math::Orientation::COLLINEAR)
         {
             return false;
         }
 
-        geng::Vec2 vec_seg_guiding  = {seg_p0, seg_p1};
-        geng::Vec2 vec_seg_to_point = {seg_p0, p};
+        geng::Vec2 vec_seg_guiding  = {seg.p0, seg.p1};
+        geng::Vec2 vec_seg_to_point = {seg.p0, p};
 
         if (geng::math::is_zero(vec_seg_to_point))
         {
-            return p == seg_p0;
+            return p == seg.p0;
         }
 
         double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
@@ -168,23 +179,23 @@ namespace geng::math
     }
 
     [[nodiscard]]
-    bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
+    bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return is_point_on_segment(p, seg.p0, seg.p1);
-    }
-
-    [[nodiscard]]
-    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
-    {
-        if (p == seg_p0) return {true, {seg_p0}};
-        if (p == seg_p1) return {true, {seg_p1}};
-        return {false, {}};
+        return is_point_on_segment(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
     std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, const geng::Segment& seg)
     {
-        return is_point_end_of_segment(p, seg.p0, seg.p1);
+        if (p == seg.p0) return {true, {seg.p0}};
+        if (p == seg.p1) return {true, {seg.p1}};
+        return {false, {}};
+    }
+
+    [[nodiscard]]
+    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    {
+        return is_point_end_of_segment(p, {seg_p0, seg_p1});
     }
 
     using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
