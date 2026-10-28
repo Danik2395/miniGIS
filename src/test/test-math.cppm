@@ -12,12 +12,12 @@ TEST(DistancePointToSegment, CorrectPoint)
     geng::Point line_p1  = {10, 5};
 
     EXPECT_DOUBLE_EQ(
-            geng::math::calc_distance_point_to_segment(target_p, line_p0, line_p1),
+            geng::math::distance(target_p, line_p0, line_p1),
             10.8
             );
 
     EXPECT_DOUBLE_EQ(
-            geng::math::calc_distance_point_to_segment(target_p, line_p1, line_p0),
+            geng::math::distance(target_p, line_p1, line_p0),
             10.8
             );
 }
@@ -31,19 +31,19 @@ TEST(DistancePointToSegment, PointOutOfProjection)
     geng::Point line_p1  = {10, 5};
 
     EXPECT_DOUBLE_EQ(
-            geng::math::calc_distance_point_to_segment(target_p, line_p1, line_p0),
+            geng::math::distance(target_p, line_p1, line_p0),
             5.8
             );
 
     target_p = {-5, 5};
     EXPECT_DOUBLE_EQ(
-            geng::math::calc_distance_point_to_segment(target_p, line_p1, line_p0),
+            geng::math::distance(target_p, line_p1, line_p0),
             10
             );
 
     EXPECT_THAT(
             8.8,
-            Not(DoubleEq(geng::math::calc_distance_point_to_segment(target_p, line_p1, line_p0)))
+            Not(DoubleEq(geng::math::distance(target_p, line_p1, line_p0)))
             );
 }
 
@@ -54,7 +54,7 @@ TEST(DistancePointToSegment, VerticalSegment)
     geng::Point line_p1  = {0, 10};
 
     EXPECT_DOUBLE_EQ(
-            geng::math::calc_distance_point_to_segment(target_p, line_p0, line_p1),
+            geng::math::distance(target_p, line_p0, line_p1),
             5.8
             );
 }
@@ -79,22 +79,22 @@ TEST(AreaPolygon, NormalPolygon)
         {5, 0}}
     }};
 
-    EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_only_outer), 100);
-    EXPECT_DOUBLE_EQ(geng::math::calc_area_polygon(poly_full), 75);
+    EXPECT_DOUBLE_EQ(geng::math::area(poly_only_outer), 100);
+    EXPECT_DOUBLE_EQ(geng::math::area(poly_full), 75);
 }
 
 TEST(OrientationPointSegment, Test)
 {
-    geng::Point segment_p0(5, 5);
-    geng::Point segment_p1(20, 10);
+    geng::Point seg_p0(5, 5);
+    geng::Point seg_p1(20, 10);
 
     geng::Point to_left_point(8, 10);
     geng::Point to_right_point(8, -10);
     geng::Point collinear_point(11, 7);
 
-    EXPECT_EQ(geng::math::orientation_point_segment(to_left_point, segment_p0, segment_p1), geng::math::Orientation::LEFT);
-    EXPECT_EQ(geng::math::orientation_point_segment(to_right_point, segment_p0, segment_p1), geng::math::Orientation::RIGHT);
-    EXPECT_EQ(geng::math::orientation_point_segment(collinear_point, segment_p0, segment_p1), geng::math::Orientation::COLLINEAR);
+    EXPECT_EQ(geng::math::orientation(to_left_point, seg_p0, seg_p1), geng::math::Orientation::LEFT);
+    EXPECT_EQ(geng::math::orientation(to_right_point, seg_p0, seg_p1), geng::math::Orientation::RIGHT);
+    EXPECT_EQ(geng::math::orientation(collinear_point, seg_p0, seg_p1), geng::math::Orientation::COLLINEAR);
 }
 
 TEST(IntersectionPointOfSegments, CheckIntersection)
@@ -126,16 +126,16 @@ TEST(IntersectionPointOfSegments, CalcIntersectionPoint)
     geng::Segment seg_vertical1  = {{2, -2}, {2, 8}};
     geng::Segment seg_vertical2  = {{3, 3}, {3, 7}};
 
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg1, seg2)), geng::Point(2, 3));
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg1, seg3)), geng::Point(3, 5));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg2)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg3)), geng::Point(3, 5));
 
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg1, seg_horisontal)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg_horisontal)), geng::Point(2, 3));
 
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg1, seg_vertical1)), geng::Point(2, 3));
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_vertical1, seg1)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg_vertical1)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg_vertical1, seg1)), geng::Point(2, 3));
 
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_vertical1, seg_horisontal)), geng::Point(2, 3));
-    EXPECT_EQ(std::get<geng::Point>(geng::math::calc_intersection(seg_horisontal, seg_vertical2)), geng::Point(3, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg_vertical1, seg_horisontal)), geng::Point(2, 3));
+    EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg_horisontal, seg_vertical2)), geng::Point(3, 3));
 
-    EXPECT_EQ(std::get<geng::Segment>(geng::math::calc_intersection(seg1, seg1)), seg1);
+    EXPECT_EQ(std::get<geng::Segment>(geng::math::intersection(seg1, seg1)), seg1);
 }

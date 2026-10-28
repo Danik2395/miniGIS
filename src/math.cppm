@@ -11,14 +11,14 @@ import gengine.types;
 export
 namespace geng::math
 {
-    bool is_zero(double v)
+    bool is_zero(double val)
     {
-        return std::abs(v) < geng::EPSILON_COMPUTE;
+        return std::abs(val) < geng::EPSILON_COMPUTE;
     }
 
-    bool is_equal(double v1, double v2)
+    bool is_equal(double val1, double val2)
     {
-        return std::abs(v1 - v2) < geng::EPSILON_COMPUTE;
+        return std::abs(val1 - val2) < geng::EPSILON_COMPUTE;
     }
 
     bool is_within(double val, double min, double max)
@@ -27,7 +27,7 @@ namespace geng::math
                (val < max || geng::math::is_equal(val, max));
     }
 
-    double projection_coeff(Vec2 vec_projecting, Vec2 vec_projected)
+    double proj_coeff(Vec2 vec_projecting, Vec2 vec_projected)
     {
         return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
     }
@@ -57,36 +57,34 @@ namespace geng::math
         return p1 < p2 ? p1 : p2;
     }
 
-    double calc_distance_euclidean(geng::Point p0, geng::Point p1)
+    double distance_euclidean(geng::Point p0, geng::Point p1)
     {
         double distance = std::pow(p0.x - p1.x, 2) +
                           std::pow(p0.y - p1.y, 2);
         return std::sqrt(distance);
     }
 
-    double calc_distance_point_to_segment(geng::Point p,
-                                          geng::Point segment_p0,
-                                          geng::Point segment_p1)
+    double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        geng::Vec2 seg_to_point_vec(segment_p0, p);
-        geng::Vec2 seg_guiding_vec(segment_p0, segment_p1);
+        geng::Vec2 vec_seg_to_point(seg_p0, p);
+        geng::Vec2 vec_seg_guiding(seg_p0, seg_p1);
 
-        double projection_coeff = geng::math::projection_coeff(seg_guiding_vec, seg_to_point_vec);
+        double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
 
-        if (segment_p0 == segment_p1 || projection_coeff < 0)
+        if (seg_p0 == seg_p1 || proj_coeff_on_guiding < 0)
         {
-            return geng::math::calc_distance_euclidean(p, segment_p0);
+            return geng::math::distance_euclidean(p, seg_p0);
         }
-        if (projection_coeff > 1)
+        if (proj_coeff_on_guiding > 1)
         {
-            return geng::math::calc_distance_euclidean(p, segment_p1);
+            return geng::math::distance_euclidean(p, seg_p1);
         }
 
-        geng::Point p_projection_on_segment = segment_p0 + seg_guiding_vec * projection_coeff;
-        return geng::math::calc_distance_euclidean(p, p_projection_on_segment);
+        geng::Point p_projection_on_segment = seg_p0 + vec_seg_guiding * proj_coeff_on_guiding;
+        return geng::math::distance_euclidean(p, p_projection_on_segment);
     }
 
-    double calc_area_polygon(const geng::Polygon& poly)
+    double area(const geng::Polygon& poly)
     {
         namespace views  = std::views;
         namespace ranges = std::ranges;
@@ -97,8 +95,8 @@ namespace geng::math
                                    | views::transform([](const auto& ring){ return ring | views::pairwise; })
                                    | views::join;
 
-        auto area_below_segment = [](const auto& group) {
-            auto [p0, p1] = group;
+        auto area_below_segment = [](const auto& seg_points) {
+            auto [p0, p1] = seg_points;
             return p0.x * p1.y - p0.y * p1.x;
         };
 
@@ -121,11 +119,11 @@ namespace geng::math
         COLLINEAR
     };
 
-    Orientation orientation_point_segment(geng::Point p, geng::Point segment_p0, geng::Point segment_p1)
+    Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
         geng::Matrix3 orientation_matrix = {
-            geng::Vec2(segment_p0, segment_p1),
-            geng::Vec2(segment_p0, p)
+            geng::Vec2(seg_p0, seg_p1),
+            geng::Vec2(seg_p0, p)
         };
 
         double determinant = orientation_matrix.det();
@@ -135,34 +133,29 @@ namespace geng::math
         return Orientation::RIGHT;
     }
 
-    void make_segment_left_to_right(geng::Segment& seg)
+    Orientation orientation(geng::Point p, const geng::Segment& seg)
     {
-        if (seg.p0 > seg.p1) std::swap(seg.p0, seg.p1);
+        return orientation(p, seg.p0, seg.p1);
     }
 
-    Orientation orientation_point_segment(geng::Point p, geng::Segment seg)
+    bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return orientation_point_segment(p, seg.p0, seg.p1);
-    }
-
-    bool is_point_on_segment(geng::Point p, geng::Point segment_p0, geng::Point segment_p1)
-    {
-        if (orientation_point_segment(p, segment_p0, segment_p1) != geng::math::Orientation::COLLINEAR)
+        if (orientation(p, seg_p0, seg_p1) != geng::math::Orientation::COLLINEAR)
         {
             return false;
         }
 
-        geng::Vec2 seg_guiding_vec = {segment_p0, segment_p1};
-        geng::Vec2 seg_to_point_vec = {segment_p0, p};
+        geng::Vec2 vec_seg_guiding  = {seg_p0, seg_p1};
+        geng::Vec2 vec_seg_to_point = {seg_p0, p};
 
-        if (geng::math::is_zero(seg_to_point_vec))
+        if (geng::math::is_zero(vec_seg_to_point))
         {
-            return p == segment_p0;
+            return p == seg_p0;
         }
 
-        double proj_coeff = geng::math::projection_coeff(seg_guiding_vec, seg_to_point_vec);
+        double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
 
-        return proj_coeff >= 0 && proj_coeff <= 1;
+        return proj_coeff_on_guiding >= 0 && proj_coeff_on_guiding <= 1;
     }
 
     bool is_point_on_segment(geng::Point p, geng::Segment seg)
@@ -170,10 +163,10 @@ namespace geng::math
         return is_point_on_segment(p, seg.p0, seg.p1);
     }
 
-    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point segment_p0, geng::Point segment_p1)
+    std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        if (p == segment_p0) return {true, {segment_p0}};
-        if (p == segment_p1) return {true, {segment_p1}};
+        if (p == seg_p0) return {true, {seg_p0}};
+        if (p == seg_p1) return {true, {seg_p1}};
         return {false, {}};
     }
 
@@ -184,26 +177,26 @@ namespace geng::math
 
     using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
 
-    SegmentsIntersection calc_intersection(geng::Segment seg1, geng::Segment seg2)
+    SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2)
     {
-        geng::Vec2 vec_seg1                  = {seg1.p0, seg1.p1};
-        geng::Vec2 vec_seg2                  = {seg2.p0, seg2.p1};
-        geng::Vec2 vec_seg1_begin_seg2_begin = {seg1.p0, seg2.p0};
+        geng::Vec2 vec_seg1          = {seg1.p0, seg1.p1};
+        geng::Vec2 vec_seg2          = {seg2.p0, seg2.p1};
+        geng::Vec2 vec_begin1_begin2 = {seg1.p0, seg2.p0};
 
         double cross_seg1_seg2 = geng::math::cross(vec_seg1, vec_seg2);
 
         if (!geng::math::is_equal(cross_seg1_seg2, 0))
         {
-            double cross_begins_seg1 = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg2);
-            double cross_begins_seg2 = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg1);
+            double cross_begins_seg1 = geng::math::cross(vec_begin1_begin2, vec_seg1);
+            double cross_begins_seg2 = geng::math::cross(vec_begin1_begin2, vec_seg2);
 
             // M(t), N(u) - are points of intersection on seg1 and seg2
             // M(t) = N(u)
             // x1 + t * p_x = x3 + u * q_x
             // y1 + t * p_y = y3 + u * q_y
             // Solve system to get t and u
-            double coeff_seg1 = cross_begins_seg1 / cross_seg1_seg2;
-            double coeff_seg2 = cross_begins_seg2 / cross_seg1_seg2;
+            double coeff_seg1 = cross_begins_seg2 / cross_seg1_seg2;
+            double coeff_seg2 = cross_begins_seg1 / cross_seg1_seg2;
 
             if (!geng::math::is_within(coeff_seg1, 0.0, 1.0) ||
                 !geng::math::is_within(coeff_seg2, 0.0, 1.0))
@@ -216,20 +209,23 @@ namespace geng::math
             return intersection_point;
         }
 
-        geng::Vec2 vec_seg1_begin_seg2_end = {seg1.p0, seg2.p1};
+        geng::Vec2 vec_begin1_end2 = {seg1.p0, seg2.p1};
 
-        double cross_to_check_segments_on_one_line = geng::math::cross(vec_seg1_begin_seg2_begin, vec_seg1_begin_seg2_end);
+        double cross_to_check_segments_on_one_line = geng::math::cross(vec_begin1_begin2, vec_begin1_end2);
 
         if (!geng::math::is_equal(cross_to_check_segments_on_one_line, 0))
         {
             return std::monostate();
         }
 
-        double coeff1 = geng::math::projection_coeff(vec_seg1, vec_seg1_begin_seg2_begin);
-        double coeff2 = geng::math::projection_coeff(vec_seg1, vec_seg1_begin_seg2_end);
+        double start_point_proj_coeff = geng::math::proj_coeff(vec_seg1, vec_begin1_begin2);
+        double end_point_proj_coeff   = geng::math::proj_coeff(vec_seg1, vec_begin1_end2);
 
-        double start_coeff = std::max(0.0, std::min(coeff1, coeff2));
-        double end_coeff   = std::min(1.0, std::max(coeff1, coeff2));
+        //              *--------------------*   seg1
+        //   *--------------------*              seg2
+        //              *---------*              intersection_seg
+        double start_coeff = std::max(0.0, std::min(start_point_proj_coeff, end_point_proj_coeff));
+        double end_coeff   = std::min(1.0, std::max(start_point_proj_coeff, end_point_proj_coeff));
 
         if (start_coeff > end_coeff)
         {
@@ -250,6 +246,6 @@ namespace geng::math
 
     bool is_intersect(geng::Segment seg1, geng::Segment seg2)
     {
-        return !std::holds_alternative<std::monostate>(geng::math::calc_intersection(seg1, seg2));
+        return !std::holds_alternative<std::monostate>(geng::math::intersection(seg1, seg2));
     }
 }

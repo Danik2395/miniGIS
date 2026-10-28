@@ -21,22 +21,22 @@ namespace geng
     {
         double x = 0, y = 0;
 
-        std::strong_ordering operator<=>(const Point& other_point) const
+        std::strong_ordering operator<=>(const Point& other_p) const
         {
-            assert(!std::isnan(this->x) && !std::isnan(other_point.x) &&
-                   !std::isnan(this->y) && !std::isnan(other_point.y) &&
+            assert(!std::isnan(this->x) && !std::isnan(other_p.x) &&
+                   !std::isnan(this->y) && !std::isnan(other_p.y) &&
                     "operator<=>: NaN is not allowed.");
 
-            if (auto cmp = quantize_(this->x) <=> quantize_(other_point.x);
+            if (auto cmp = quantize_(this->x) <=> quantize_(other_p.x);
                     cmp != 0)
                 return cmp;
 
-            return quantize_(this->y) <=> quantize_(other_point.y);
+            return quantize_(this->y) <=> quantize_(other_p.y);
         }
 
-        bool operator==(const Point& other_point) const
+        bool operator==(const Point& other_p) const
         {
-            return (*this <=> other_point) == 0;
+            return (*this <=> other_p) == 0;
         }
 
         Point operator+(Vec2 vec) const;
@@ -98,16 +98,14 @@ namespace geng
             y(p1.y - p0.y)
         {}
 
-        Vec2(std::initializer_list<geng::Point> list) :
+        Vec2(std::initializer_list<geng::Point> point_sequence) :
             Vec2(
-                    list.size() > 0 ? *list.begin()       : geng::Point{},
-                    list.size() > 1 ? *(list.begin() + 1) : geng::Point{}
+                    point_sequence.size() > 0 ? *point_sequence.begin()       : geng::Point{},
+                    point_sequence.size() > 1 ? *(point_sequence.begin() + 1) : geng::Point{}
                 )
         {
-            assert(list.size() <= 2 && "Vec2: too many arguments in initialization list.");
+            assert(point_sequence.size() <= 2 && "Vec2: too many arguments in initialization list.");
         }
-
-        // добавить лист для по точкам
 
         double operator*(Vec2 other_vec) const
         {
@@ -173,10 +171,10 @@ namespace geng
             else { assert(false && "Matrix3: non valid init_type."); }
         }
 
-        Matrix3(std::initializer_list<double> list)
+        Matrix3(std::initializer_list<double> double_sequence)
         {
-            std::ranges::copy(list | std::views::take(9), m.begin());
-            assert(list.size() <= 9 && "Matrix3: too many arguments in inidializion list.");
+            std::ranges::copy(double_sequence | std::views::take(9), m.begin());
+            assert(double_sequence.size() <= 9 && "Matrix3: too many arguments in initializion list.");
         }
 
         explicit Matrix3(geng::Vec2 vec1, geng::Vec2 vec2 = {}, geng::Vec2 vec3 = {})
@@ -189,14 +187,14 @@ namespace geng
         }
 
 
-        Matrix3(std::initializer_list<geng::Vec2> list) :
+        Matrix3(std::initializer_list<geng::Vec2> vec_sequense) :
             Matrix3(
-                    list.size() > 0 ?  *list.begin()      : geng::Vec2{},
-                    list.size() > 1 ? *(list.begin() + 1) : geng::Vec2{},
-                    list.size() > 2 ? *(list.begin() + 2) : geng::Vec2{}
+                    vec_sequense.size() > 0 ?  *vec_sequense.begin()      : geng::Vec2{},
+                    vec_sequense.size() > 1 ? *(vec_sequense.begin() + 1) : geng::Vec2{},
+                    vec_sequense.size() > 2 ? *(vec_sequense.begin() + 2) : geng::Vec2{}
                    )
         {
-            assert(list.size() <= 3 && "Matrix3: too many arguments in inidializion list.");
+            assert(vec_sequense.size() <= 3 && "Matrix3: too many arguments in inidializion list.");
         }
 
         const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
@@ -210,16 +208,16 @@ namespace geng
         auto begin()       { return m.begin(); }
         auto end()         { return m.end(); }
 
-        Matrix3 operator*(const Matrix3& other) const
+        Matrix3 operator*(const Matrix3& other_mtrx) const
         {
             Matrix3 res;
             for (size_t i = 0; i < 3; ++i)
             {
                 for (size_t j = 0; j < 3; ++j)
                 {
-                    res[i, j] = (*this)[i, 0] * other[0, j] +
-                                (*this)[i, 1] * other[1, j] +
-                                (*this)[i, 2] * other[2, j];
+                    res[i, j] = (*this)[i, 0] * other_mtrx[0, j] +
+                                (*this)[i, 1] * other_mtrx[1, j] +
+                                (*this)[i, 2] * other_mtrx[2, j];
                 }
             }
             return res;
@@ -236,11 +234,11 @@ namespace geng
         Matrix3 operator*(double scalar) const
         {
             Matrix3 scalar_matrix(scalar);
-            return binary_for_each_op_(scalar_matrix, std::multiplies{});
+            return binary_predicate_for_each_mtrx_elem_(scalar_matrix, std::multiplies{});
         }
 
-        Matrix3 operator+(const Matrix3& other) const { return binary_for_each_op_(other, std::plus{}); }
-        Matrix3 operator-(const Matrix3& other) const { return binary_for_each_op_(other, std::minus{}); }
+        Matrix3 operator+(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::plus{}); }
+        Matrix3 operator-(const Matrix3& other_mtrx) const { return binary_predicate_for_each_mtrx_elem_(other_mtrx, std::minus{}); }
 
         double det() const
         {
@@ -251,11 +249,11 @@ namespace geng
         }
 
     private:
-        Matrix3 binary_for_each_op_(const Matrix3& other_matrix, std::regular_invocable<double, double> auto op) const
+        Matrix3 binary_predicate_for_each_mtrx_elem_(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
         {
-            Matrix3 result_matrix;
-            std::transform(this->begin(), this->end(), other_matrix.begin(), result_matrix.begin(), op);
-            return result_matrix;
+            Matrix3 result_mtrx;
+            std::transform(this->begin(), this->end(), other_mtrx.begin(), result_mtrx.begin(), pred);
+            return result_mtrx;
         }
     };
 }
