@@ -34,6 +34,9 @@ namespace geng::math
     [[nodiscard]]
     double proj_coeff(Vec2 vec_projecting, Vec2 vec_projected)
     {
+        assert(!(geng::math::is_zero(vec_projecting.x) && geng::math::is_zero(vec_projecting.y)) &&
+               "proj_coeff: vec_projecting must be non-zero; guarantee on call side");
+
         return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
     }
 
@@ -52,6 +55,12 @@ namespace geng::math
     bool is_zero(geng::Vec2 vec)
     {
         return geng::math::is_zero(geng::math::length(vec));
+    }
+
+    [[nodiscard]]
+    bool is_degenerated(const geng::Segment& seg)
+    {
+        return seg.p0 == seg.p1;
     }
 
     Point max(Point p1, Point p2)
@@ -75,9 +84,9 @@ namespace geng::math
     [[nodiscard]]
     double distance(geng::Point p, const geng::Segment& seg)
     {
-        if (geng::math::is_degrade(seg))
+        if (geng::math::is_degenerated(seg))
         {
-            return geng::math::distance_euclidean(seg.p0, seg.p1);
+            return geng::math::distance_euclidean(p, seg.p0);
         }
 
         geng::Vec2 vec_seg_to_point(seg.p0, p);
@@ -85,7 +94,7 @@ namespace geng::math
 
         double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
 
-        if (seg.p0 == seg.p1 || proj_coeff_on_guiding < 0)
+        if (proj_coeff_on_guiding < 0)
         {
             return geng::math::distance_euclidean(p, seg.p0);
         }
@@ -160,6 +169,11 @@ namespace geng::math
     [[nodiscard]]
     bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     {
+        if (geng::math::is_degenerated(seg))
+        {
+            return seg.p0 == p;
+        }
+
         if (orientation(p, seg.p0, seg.p1) != geng::math::Orientation::COLLINEAR)
         {
             return false;
@@ -170,7 +184,7 @@ namespace geng::math
 
         if (geng::math::is_zero(vec_seg_to_point))
         {
-            return p == seg.p0;
+            return seg.p0 == p;
         }
 
         double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
@@ -203,6 +217,14 @@ namespace geng::math
     [[nodiscard]]
     SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2)
     {
+        bool degenerated1 = geng::math::is_degenerated(seg1);
+        bool degenerated2 = geng::math::is_degenerated(seg2);
+
+        if (degenerated1 && geng::math::is_point_on_segment(seg1.p0, seg2)) return seg1.p0;
+        if (degenerated1 && geng::math::is_point_on_segment(seg2.p0, seg1)) return seg2.p0;
+
+        if (degenerated1 || degenerated2) return std::monostate();
+
         geng::Vec2 vec_seg1          = {seg1.p0, seg1.p1};
         geng::Vec2 vec_seg2          = {seg2.p0, seg2.p1};
         geng::Vec2 vec_begin1_begin2 = {seg1.p0, seg2.p0};
