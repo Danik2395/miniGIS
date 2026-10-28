@@ -154,11 +154,29 @@ namespace geng
 
     struct [[nodiscard]] Matrix3
     {
+    private:
         enum class InitType
         {
-            Full,
-            Diagonal
+            FULL,
+            DIAGONAL
         };
+
+        explicit Matrix3(double val, InitType init_type)
+        {
+            if (init_type == InitType::DIAGONAL)
+            {
+                m[0] = val;
+                m[4] = val;
+                m[8] = val;
+            }
+            else if (init_type == InitType::FULL)
+            {
+                m.fill(val);
+            }
+            else { assert(false && "Matrix3: non valid init_type."); }
+        }
+
+    public:
 
         std::array<double, 9> m{};
 
@@ -170,19 +188,14 @@ namespace geng
             : m{m0, m1, m2, m3, m4, m5, m6, m7, m8}
         {}
 
-        explicit Matrix3(double val, InitType init_type = InitType::Full)
+        static Matrix3 Full(double val)
         {
-            if (init_type == InitType::Diagonal)
-            {
-                m[0] = val;
-                m[4] = val;
-                m[8] = val;
-            }
-            else if (init_type == InitType::Full)
-            {
-                m.fill(val);
-            }
-            else { assert(false && "Matrix3: non valid init_type."); }
+            return Matrix3(val, geng::Matrix3::InitType::FULL);
+        }
+
+        static Matrix3 Diagonal(double val)
+        {
+            return Matrix3(val, geng::Matrix3::InitType::DIAGONAL);
         }
 
         Matrix3(std::initializer_list<double> double_sequence)
@@ -213,9 +226,6 @@ namespace geng
 
         [[nodiscard]] const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
         [[nodiscard]]       double& operator[](size_t i, size_t j)       { return m[i * 3 + j]; }
-
-        [[nodiscard]] const double& operator[](size_t n) const { return m[n]; }
-        [[nodiscard]]       double& operator[](size_t n)       { return m[n]; }
 
         [[nodiscard]] auto begin() const { return m.begin(); }
         [[nodiscard]] auto end()   const { return m.end(); }
@@ -250,12 +260,12 @@ namespace geng
         [[nodiscard]]
         Matrix3 operator*(double scalar) const
         {
-            Matrix3 scalar_matrix(scalar);
-            return predicate_for_each(scalar_matrix, std::multiplies{});
+            Matrix3 matrix_out_of_scalars = geng::Matrix3::Full(scalar);
+            return zip_with_predicate(matrix_out_of_scalars, std::multiplies{});
         }
 
-        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return predicate_for_each(other_mtrx, std::plus{}); }
-        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return predicate_for_each(other_mtrx, std::minus{}); }
+        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::plus{}); }
+        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::minus{}); }
 
         [[nodiscard]]
         double det() const
@@ -267,7 +277,7 @@ namespace geng
         }
 
     private:
-        Matrix3 predicate_for_each(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
+        Matrix3 zip_with_predicate(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
         {
             Matrix3 result_mtrx;
             std::transform(begin(), end(), other_mtrx.begin(), result_mtrx.begin(), pred);

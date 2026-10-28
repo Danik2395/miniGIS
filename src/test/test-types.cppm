@@ -71,15 +71,15 @@ TEST(TypesConstructors, Matrix3Constructor)
                                   double v3, double v4, double v5,
                                   double v6, double v7, double v8)
     {
-        EXPECT_DOUBLE_EQ((matrix[0, 0]), v0);
-        EXPECT_DOUBLE_EQ(matrix[1], v1);
-        EXPECT_DOUBLE_EQ(matrix[2], v2);
-        EXPECT_DOUBLE_EQ(matrix[3], v3);
-        EXPECT_DOUBLE_EQ(matrix[4], v4);
-        EXPECT_DOUBLE_EQ(matrix[5], v5);
-        EXPECT_DOUBLE_EQ(matrix[6], v6);
-        EXPECT_DOUBLE_EQ(matrix[7], v7);
-        EXPECT_DOUBLE_EQ(matrix[8], v8);
+        EXPECT_DOUBLE_EQ(matrix.m[0], v0);
+        EXPECT_DOUBLE_EQ(matrix.m[1], v1);
+        EXPECT_DOUBLE_EQ(matrix.m[2], v2);
+        EXPECT_DOUBLE_EQ(matrix.m[3], v3);
+        EXPECT_DOUBLE_EQ(matrix.m[4], v4);
+        EXPECT_DOUBLE_EQ(matrix.m[5], v5);
+        EXPECT_DOUBLE_EQ(matrix.m[6], v6);
+        EXPECT_DOUBLE_EQ(matrix.m[7], v7);
+        EXPECT_DOUBLE_EQ(matrix.m[8], v8);
     };
 
     double m0 = 0, m1 = 1, m2 = 2;
@@ -101,10 +101,10 @@ TEST(TypesConstructors, Matrix3Constructor)
     geng::Matrix3 matrix_matrix_list = {matrix_args};
     expect_matrix(matrix_matrix_list, m0, m1, m2, m3, m4, m5, m6, m7, m8);
 
-    geng::Matrix3 matrix_full(m0);
+    geng::Matrix3 matrix_full = geng::Matrix3::Full(m0);
     expect_matrix(matrix_full, m0, m0, m0, m0, m0, m0, m0, m0, m0);
 
-    geng::Matrix3 matrix_diagonal(m0, geng::Matrix3::InitType::Diagonal);
+    geng::Matrix3 matrix_diagonal = geng::Matrix3::Diagonal(m0);
     expect_matrix(matrix_diagonal, m0, 0, 0, 0, m0, 0, 0, 0, m0);
 
     geng::Vec2 vec1(1, 4);
