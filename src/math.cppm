@@ -40,11 +40,6 @@ namespace geng::math
         return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
     }
 
-    double length(Vec2 vec)
-    {
-        return std::hypot(vec.x, vec.y);
-    }
-
     [[nodiscard]]
     double cross(Vec2 vec1, Vec2 vec2)
     {
@@ -54,7 +49,7 @@ namespace geng::math
     [[nodiscard]]
     bool is_zero(geng::Vec2 vec)
     {
-        return geng::math::is_zero(geng::math::length(vec));
+        return geng::math::is_zero(vec.length());
     }
 
     [[nodiscard]]
