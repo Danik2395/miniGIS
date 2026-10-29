@@ -44,10 +44,8 @@ namespace geng
             return (*this <=> other_p) == 0;
         }
 
-        [[nodiscard]]
         Point operator+(Vec2 vec) const;
 
-        [[nodiscard]]
         Point operator-(Vec2 vec) const;
 
     private:
@@ -121,19 +119,16 @@ namespace geng
             return x * other_vec.x + y * other_vec.y;
         }
 
-        [[nodiscard]]
         Vec2 operator*(double scalar) const
         {
             return {x * scalar, y * scalar};
         }
 
-        [[nodiscard]]
         Vec2 operator+(Vec2 other_vec) const
         {
             return {x + other_vec.x, y + other_vec.y};
         }
 
-        [[nodiscard]]
         Vec2 operator-(Vec2 other_vec) const
         {
             return {x - other_vec.x, y - other_vec.y};
@@ -248,7 +243,6 @@ namespace geng
             return res;
         }
 
-        [[nodiscard]]
         Vec2 operator*(const Vec2& vec) const
         {
             return {
@@ -257,15 +251,14 @@ namespace geng
             };
         }
 
-        [[nodiscard]]
         Matrix3 operator*(double scalar) const
         {
             Matrix3 matrix_out_of_scalars = geng::Matrix3::Full(scalar);
             return zip_with_predicate(matrix_out_of_scalars, std::multiplies{});
         }
 
-        [[nodiscard]] Matrix3 operator+(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::plus{}); }
-        [[nodiscard]] Matrix3 operator-(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::minus{}); }
+        Matrix3 operator+(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::plus{}); }
+        Matrix3 operator-(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::minus{}); }
 
         [[nodiscard]]
         double det() const
