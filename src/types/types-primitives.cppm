@@ -72,7 +72,7 @@ namespace geng
                     list.size() > 1 ? *(list.begin() + 1) : geng::Point{}
                    )
         {
-            assert(list.size() <= 2 && "Segment: too many arguments in initialization list.");
+            assert(list.size() == 2 && "Segment: must be 2 points in initialization list.");
         }
 
         [[nodiscard]]
@@ -112,7 +112,7 @@ namespace geng
                     point_sequence.size() > 1 ? *(point_sequence.begin() + 1) : geng::Point{}
                 )
         {
-            assert(point_sequence.size() <= 2 && "Vec2: too many arguments in initialization list.");
+            assert(point_sequence.size() == 2 && "Vec2: must be 2 points in initialization list.");
         }
 
         [[nodiscard]]
@@ -201,7 +201,7 @@ namespace geng
         Matrix3(std::initializer_list<double> double_sequence)
         {
             std::ranges::copy(double_sequence | std::views::take(9), m.begin());
-            assert(double_sequence.size() <= 9 && "Matrix3: too many arguments in initializion list.");
+            assert(double_sequence.size() == 9 && "Matrix3: must be 9 values in initialization list.");
         }
 
         explicit Matrix3(geng::Vec2 vec1, geng::Vec2 vec2 = {}, geng::Vec2 vec3 = {})
