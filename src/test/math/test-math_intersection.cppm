@@ -28,7 +28,7 @@ TEST(Intersection, SinglePointCollinearSegmentIntersection)
     EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg2)), geng::Point(3, 5));
 }
 
-TEST(Intersection, NoIntersection)
+TEST(Intersection, NoIntersectionSegmentIntersiction)
 {
     geng::Segment seg1 = {{1, 1}, {3, 5}};
     geng::Segment seg2 = {{-3, -5}, {-7, -13}};
@@ -49,18 +49,13 @@ TEST(Intersection, MultiplePointCollinearSegmentIntersection)
             geng::Segment({5, 3}, {6, 3}));
 }
 
-TEST(Intersection, SegmentsIntersectsCheckIntersection)
+TEST(Intersection, IsSegmentsIntersect)
 {
-    geng::Segment seg1 = {{1, 1}, {3, 5}};
-    geng::Segment seg2 = {{1, 5}, {3, 1}};
+    geng::Segment seg_intersect1 = {{1, 1}, {3, 5}};
+    geng::Segment seg_intersect2 = {{1, 5}, {3, 1}};
+    EXPECT_TRUE(geng::math::is_intersect(seg_intersect1, seg_intersect2));
 
-    EXPECT_TRUE(geng::math::is_intersect(seg1, seg2));
-}
-
-TEST(Intersection, SegmentsDontIntersectCheckIntersection)
-{
-    geng::Segment seg1 = {{1, 1}, {3, 5}};
-    geng::Segment seg2 = {{-1, -5}, {-3, -1}};
-
-    EXPECT_FALSE(geng::math::is_intersect(seg1, seg2));
+    geng::Segment seg_dont_intersect1 = {{1, 1}, {3, 5}};
+    geng::Segment seg_dont_intersect2 = {{-1, -5}, {-3, -1}};
+    EXPECT_FALSE(geng::math::is_intersect(seg_dont_intersect1, seg_dont_intersect2));
 }
