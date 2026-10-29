@@ -1,6 +1,5 @@
 module;
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <variant>
 export module geotest:math;
 import gengine.types;
@@ -25,8 +24,6 @@ TEST(DistancePointToSegment, CorrectPoint)
 
 TEST(DistancePointToSegment, PointOutOfProjection)
 {
-    using namespace testing;
-
     geng::Point target_p = {15.8, 5};
     geng::Point line_p0  = {5, 5};
     geng::Point line_p1  = {10, 5};
@@ -40,11 +37,6 @@ TEST(DistancePointToSegment, PointOutOfProjection)
     EXPECT_DOUBLE_EQ(
             geng::math::distance(target_p, line_p1, line_p0),
             10
-            );
-
-    EXPECT_THAT(
-            8.8,
-            Not(DoubleEq(geng::math::distance(target_p, line_p1, line_p0)))
             );
 }
 
