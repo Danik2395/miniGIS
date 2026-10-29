@@ -1,7 +1,6 @@
-import testr;
+import gengine.types;
 
 int main()
 {
-    foo();
     return 0;
 }

@@ -1,3 +1,11 @@
 export module geotest;
-export import :math;
-export import :types;
+export import :math_predicates;
+export import :math_distance;
+export import :math_area;
+export import :math_orientation;
+export import :math_relations;
+export import :math_intersection;
+export import :types_point;
+export import :types_vec2;
+export import :types_segment;
+export import :types_matrix3;

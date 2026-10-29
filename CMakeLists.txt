@@ -48,8 +48,16 @@ if(BUILD_TESTS)
 
     target_sources(${PROJECT_NAME}_tests PRIVATE FILE_SET CXX_MODULES FILES
         src/test/test.cppm
-        src/test/test-math.cppm
-        src/test/test-types.cppm
+        src/test/math/test-math_area.cppm
+        src/test/math/test-math_distance.cppm
+        src/test/math/test-math_intersection.cppm
+        src/test/math/test-math_orientation.cppm
+        src/test/math/test-math_predicates.cppm
+        src/test/math/test-math_relations.cppm
+        src/test/types/test-types_matrix3.cppm
+        src/test/types/test-types_point.cppm
+        src/test/types/test-types_vec2.cppm
+        src/test/types/test-types_segment.cppm
     )
 
     target_link_libraries(${PROJECT_NAME}_tests PRIVATE
