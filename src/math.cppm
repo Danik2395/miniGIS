@@ -27,8 +27,10 @@ namespace geng::math
     [[nodiscard]]
     bool is_within(double val, double min, double max)
     {
-        return (val > min || geng::math::is_equal(val, min)) &&
-               (val < max || geng::math::is_equal(val, max));
+        const auto [actual_min, actual_max] = std::minmax(min, max);
+
+        return (val > actual_min || geng::math::is_equal(val, min)) &&
+               (val < actual_max || geng::math::is_equal(val, max));
     }
 
     [[nodiscard]]
