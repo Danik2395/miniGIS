@@ -5,38 +5,17 @@ module;
 #include <algorithm>
 #include <utility>
 #include <variant>
-#include <functional>
 export module gengine.math;
 import gengine.types;
+import gengine.compare;
 
 export
 namespace geng::math
 {
     [[nodiscard]]
-    bool is_zero(double val)
-    {
-        return std::abs(val) < geng::EPSILON_COMPUTE;
-    }
-
-    [[nodiscard]]
-    bool is_equal(double val1, double val2)
-    {
-        return std::abs(val1 - val2) < geng::EPSILON_COMPUTE;
-    }
-
-    [[nodiscard]]
-    bool is_within(double val, double min, double max)
-    {
-        const auto [actual_min, actual_max] = std::minmax(min, max);
-
-        return (val > actual_min || geng::math::is_equal(val, min)) &&
-               (val < actual_max || geng::math::is_equal(val, max));
-    }
-
-    [[nodiscard]]
     double proj_coeff(Vec2 vec_projecting, Vec2 vec_projected)
     {
-        assert(!(geng::math::is_zero(vec_projecting.x) && geng::math::is_zero(vec_projecting.y)) &&
+        assert(!(geng::is_zero(vec_projecting.x) && geng::is_zero(vec_projecting.y)) &&
                "proj_coeff: vec_projecting must be non-zero; guarantee on call side");
 
         return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
@@ -46,12 +25,6 @@ namespace geng::math
     double cross(Vec2 vec1, Vec2 vec2)
     {
         return vec1.x * vec2.y - vec2.x * vec1.y;
-    }
-
-    [[nodiscard]]
-    bool is_zero(geng::Vec2 vec)
-    {
-        return geng::math::is_zero(vec.length());
     }
 
     [[nodiscard]]
@@ -154,7 +127,7 @@ namespace geng::math
         double cross_orientation = geng::math::cross(vec_seg_guiding, vec_seg_to_point);
 
         if (cross_orientation > 0)                  return Orientation::LEFT;
-        if (geng::math::is_zero(cross_orientation)) return Orientation::COLLINEAR;
+        if (geng::is_zero(cross_orientation)) return Orientation::COLLINEAR;
         return Orientation::RIGHT;
     }
 
@@ -179,7 +152,7 @@ namespace geng::math
         geng::Vec2 vec_seg_guiding  = {seg.p0, seg.p1};
         geng::Vec2 vec_seg_to_point = {seg.p0, p};
 
-        if (geng::math::is_zero(vec_seg_to_point))
+        if (geng::is_zero(vec_seg_to_point))
         {
             return seg.p0 == p;
         }
@@ -228,7 +201,7 @@ namespace geng::math
 
         double cross_seg1_seg2 = geng::math::cross(vec_seg1, vec_seg2);
 
-        if (!geng::math::is_equal(cross_seg1_seg2, 0))
+        if (!geng::is_equal(cross_seg1_seg2, 0))
         {
             double cross_begins_seg1 = geng::math::cross(vec_begin1_begin2, vec_seg1);
             double cross_begins_seg2 = geng::math::cross(vec_begin1_begin2, vec_seg2);
@@ -241,8 +214,8 @@ namespace geng::math
             double coeff_seg1 = cross_begins_seg2 / cross_seg1_seg2;
             double coeff_seg2 = cross_begins_seg1 / cross_seg1_seg2;
 
-            if (!geng::math::is_within(coeff_seg1, 0.0, 1.0) ||
-                !geng::math::is_within(coeff_seg2, 0.0, 1.0))
+            if (!geng::is_within(coeff_seg1, 0.0, 1.0) ||
+                !geng::is_within(coeff_seg2, 0.0, 1.0))
             {
                 return std::monostate();
             }
@@ -256,7 +229,7 @@ namespace geng::math
 
         double cross_to_check_segments_on_one_line = geng::math::cross(vec_begin1_begin2, vec_begin1_end2);
 
-        if (!geng::math::is_equal(cross_to_check_segments_on_one_line, 0))
+        if (!geng::is_equal(cross_to_check_segments_on_one_line, 0))
         {
             return std::monostate();
         }
@@ -277,7 +250,7 @@ namespace geng::math
 
         geng::Point intersection_point_begin = seg1.p0 + vec_seg1 * start_coeff;
 
-        if (geng::math::is_equal(start_coeff, end_coeff))
+        if (geng::is_equal(start_coeff, end_coeff))
         {
             return intersection_point_begin;
         }

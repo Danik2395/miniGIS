@@ -1,7 +1,6 @@
 module;
 #include <cassert>
 #include <cmath>
-#include <cstdint>
 #include <functional>
 #include <initializer_list>
 #include <vector>
@@ -12,12 +11,11 @@ module;
 #include <concepts>
 #include <cstddef>
 export module gengine.types:primitives;
+import gengine.compare.doubles;
 
 export
 namespace geng
 {
-    constexpr double EPSILON_COMPUTE = 1e-9;
-
     struct Vec2;
 
     struct [[nodiscard]] Point
@@ -31,11 +29,11 @@ namespace geng
                    !std::isnan(y) && !std::isnan(other_p.y) &&
                     "operator<=>: NaN is not allowed.");
 
-            if (auto cmp = quantize(x) <=> quantize(other_p.x);
+            if (auto cmp = geng::quantize(x) <=> geng::quantize(other_p.x);
                     cmp != 0)
                 return cmp;
 
-            return quantize(y) <=> quantize(other_p.y);
+            return geng::quantize(y) <=> geng::quantize(other_p.y);
         }
 
         [[nodiscard]]
@@ -47,12 +45,6 @@ namespace geng
         Point operator+(Vec2 vec) const;
 
         Point operator-(Vec2 vec) const;
-
-    private:
-        int64_t quantize(double v) const
-        {
-            return static_cast<int64_t>(std::round(v / EPSILON_COMPUTE));
-        }
     };
 
     struct [[nodiscard]] Segment
