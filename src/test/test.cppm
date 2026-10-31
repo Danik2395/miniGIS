@@ -9,3 +9,4 @@ export import :types_point;
 export import :types_vec2;
 export import :types_segment;
 export import :types_matrix3;
+export import :compare;
