@@ -19,6 +19,9 @@ target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types.cppm
     src/types/types-primitives.cppm
     src/math.cppm
+    src/compare/compare.cppm
+    src/compare/compare-double.cppm
+    src/compare/compare-primitives.cppm
 )
 
 add_executable(${PROJECT_NAME} WIN32)
@@ -58,6 +61,7 @@ if(BUILD_TESTS)
         src/test/types/test-types_point.cppm
         src/test/types/test-types_vec2.cppm
         src/test/types/test-types_segment.cppm
+        src/test/compare/test-compare.cppm
     )
 
     target_link_libraries(${PROJECT_NAME}_tests PRIVATE
