@@ -228,16 +228,16 @@ namespace geng
         [[nodiscard]] auto end()         { return m.end(); }
 
         [[nodiscard]]
-        Matrix3 operator*(const Matrix3& other_mtrx) const
+        Matrix3 operator*(const Matrix3& other_mtx) const
         {
             Matrix3 res;
             for (size_t i = 0; i < 3; ++i)
             {
                 for (size_t j = 0; j < 3; ++j)
                 {
-                    res[i, j] = (*this)[i, 0] * other_mtrx[0, j] +
-                                (*this)[i, 1] * other_mtrx[1, j] +
-                                (*this)[i, 2] * other_mtrx[2, j];
+                    res[i, j] = (*this)[i, 0] * other_mtx[0, j] +
+                                (*this)[i, 1] * other_mtx[1, j] +
+                                (*this)[i, 2] * other_mtx[2, j];
                 }
             }
             return res;
@@ -257,8 +257,8 @@ namespace geng
             return zip_with_predicate(matrix_out_of_scalars, std::multiplies{});
         }
 
-        Matrix3 operator+(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::plus{}); }
-        Matrix3 operator-(const Matrix3& other_mtrx) const { return zip_with_predicate(other_mtrx, std::minus{}); }
+        Matrix3 operator+(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::plus{}); }
+        Matrix3 operator-(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::minus{}); }
 
         [[nodiscard]]
         double det() const
@@ -270,11 +270,11 @@ namespace geng
         }
 
     private:
-        Matrix3 zip_with_predicate(const Matrix3& other_mtrx, std::regular_invocable<double, double> auto pred) const
+        Matrix3 zip_with_predicate(const Matrix3& other_mtx, std::regular_invocable<double, double> auto pred) const
         {
-            Matrix3 result_mtrx;
-            std::transform(begin(), end(), other_mtrx.begin(), result_mtrx.begin(), pred);
-            return result_mtrx;
+            Matrix3 result_mtx;
+            std::transform(begin(), end(), other_mtx.begin(), result_mtx.begin(), pred);
+            return result_mtx;
         }
     };
 }
