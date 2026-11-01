@@ -5,9 +5,9 @@ import gengine.types;
 export
 namespace geng
 {
-    [[nodiscard]]
-    bool is_zero(geng::Vec2 vec)
-    {
-        return geng::is_zero(vec.length());
-    }
+[[nodiscard]]
+bool is_zero(geng::Vec2 vec)
+{
+    return geng::is_zero(vec.length());
 }
+} // namespace geng
