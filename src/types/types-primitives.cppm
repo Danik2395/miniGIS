@@ -42,9 +42,9 @@ namespace geng
             return (*this <=> other_p) == 0;
         }
 
-        Point operator+(Vec2 vec) const;
+        Point operator+(geng::Vec2 vec) const;
 
-        Point operator-(Vec2 vec) const;
+        Point operator-(geng::Vec2 vec) const;
     };
 
     struct [[nodiscard]] Segment
@@ -74,13 +74,13 @@ namespace geng
 
     struct [[nodiscard]] LineString
     {
-        std::vector<Point> points;
+        std::vector<geng::Point> points;
     };
 
     struct [[nodiscard]] Polygon
     {
-        std::vector<Point> outer;
-        std::vector<std::vector<Point>> inner;
+        std::vector<geng::Point> outer;
+        std::vector<std::vector<geng::Point>> inner;
     };
 
     struct [[nodiscard]] Vec2
@@ -235,7 +235,7 @@ namespace geng
             return res;
         }
 
-        Vec2 operator*(const Vec2& vec) const
+        geng::Vec2 operator*(const geng::Vec2& vec) const
         {
             return {
                 (*this)[0, 0] * vec.x + (*this)[0, 1] * vec.y + (*this)[0, 2],
@@ -245,7 +245,7 @@ namespace geng
 
         Matrix3 operator*(double scalar) const
         {
-            Matrix3 matrix_out_of_scalars = geng::Matrix3::Full(scalar);
+            Matrix3 matrix_out_of_scalars = Matrix3::Full(scalar);
             return zip_with_predicate(matrix_out_of_scalars, std::multiplies{});
         }
 
@@ -273,12 +273,12 @@ namespace geng
 
 namespace geng
 {
-    inline Point Point::operator+(Vec2 vec) const
+    inline geng::Point geng::Point::operator+(geng::Vec2 vec) const
     {
         return {this->x + vec.x, this->y + vec.y};
     }
 
-    inline Point Point::operator-(Vec2 vec) const
+    inline geng::Point geng::Point::operator-(geng::Vec2 vec) const
     {
         return {this->x - vec.x, this->y - vec.y};
     }

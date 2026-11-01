@@ -13,7 +13,7 @@ export
 namespace geng::math
 {
     [[nodiscard]]
-    double proj_coeff(Vec2 vec_projecting, Vec2 vec_projected)
+    double proj_coeff(geng::Vec2 vec_projecting, geng::Vec2 vec_projected)
     {
         assert(!(geng::is_zero(vec_projecting.x) && geng::is_zero(vec_projecting.y)) &&
                "proj_coeff: vec_projecting must be non-zero; guarantee on call side");
@@ -22,7 +22,7 @@ namespace geng::math
     }
 
     [[nodiscard]]
-    double cross(Vec2 vec1, Vec2 vec2)
+    double cross(geng::Vec2 vec1, geng::Vec2 vec2)
     {
         return vec1.x * vec2.y - vec2.x * vec1.y;
     }
@@ -33,12 +33,12 @@ namespace geng::math
         return seg.p0 == seg.p1;
     }
 
-    Point max(Point p1, Point p2)
+    geng::Point max(geng::Point p1, geng::Point p2)
     {
         return p1 > p2 ? p1 : p2;
     }
 
-    Point min(Point p1, Point p2)
+    geng::Point min(geng::Point p1, geng::Point p2)
     {
         return p1 < p2 ? p1 : p2;
     }
@@ -80,7 +80,7 @@ namespace geng::math
     [[nodiscard]]
     double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return distance(p, {seg_p0, seg_p1});
+        return geng::math::distance(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
@@ -119,32 +119,36 @@ namespace geng::math
         COLLINEAR
     };
 
-    Orientation orientation(geng::Point p, const geng::Segment& seg)
+    geng::math::Orientation orientation(geng::Point p, const geng::Segment& seg)
     {
+        using Orient = geng::math::Orientation;
+
         geng::Vec2 vec_seg_guiding  = {seg.p0, seg.p1};
         geng::Vec2 vec_seg_to_point = {seg.p0, p};
 
         double cross_orientation = geng::math::cross(vec_seg_guiding, vec_seg_to_point);
 
-        if (cross_orientation > 0)                  return Orientation::LEFT;
-        if (geng::is_zero(cross_orientation)) return Orientation::COLLINEAR;
+        if (cross_orientation > 0)            return Orient::LEFT;
+        if (geng::is_zero(cross_orientation)) return Orient::COLLINEAR;
         return Orientation::RIGHT;
     }
 
-    Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
+    geng::math::Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return orientation(p, {seg_p0, seg_p1});
+        return geng::math::orientation(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
     bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     {
+        using Orient = geng::math::Orientation;
+
         if (geng::math::is_degenerated(seg))
         {
             return seg.p0 == p;
         }
 
-        if (orientation(p, seg.p0, seg.p1) != geng::math::Orientation::COLLINEAR)
+        if (geng::math::orientation(p, seg.p0, seg.p1) != Orient::COLLINEAR)
         {
             return false;
         }
@@ -165,7 +169,7 @@ namespace geng::math
     [[nodiscard]]
     bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return is_point_on_segment(p, {seg_p0, seg_p1});
+        return geng::math::is_point_on_segment(p, {seg_p0, seg_p1});
     }
 
     [[nodiscard]]
@@ -179,13 +183,13 @@ namespace geng::math
     [[nodiscard]]
     std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
     {
-        return is_point_end_of_segment(p, {seg_p0, seg_p1});
+        return geng::math::is_point_end_of_segment(p, {seg_p0, seg_p1});
     }
 
     using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
 
     [[nodiscard]]
-    SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2)
+    geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2)
     {
         bool degenerated1 = geng::math::is_degenerated(seg1);
         bool degenerated2 = geng::math::is_degenerated(seg2);
