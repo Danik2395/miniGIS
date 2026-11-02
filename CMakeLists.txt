@@ -15,6 +15,14 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 add_library(${PROJECT_NAME}_core OBJECT)
 
+FetchContent_Declare(
+    entt
+    GIT_REPOSITORY https://github.com/skypjack/entt.git
+    GIT_TAG        v4.0.0
+)
+
+FetchContent_MakeAvailable(entt)
+
 target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types.cppm
     src/types/types-primitives.cppm
@@ -23,6 +31,8 @@ target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/compare/compare-doubles.cppm
     src/compare/compare-primitives.cppm
 )
+
+target_link_libraries(${PROJECT_NAME}_core  UBLIC EnTT::EnTT)
 
 add_executable(${PROJECT_NAME} WIN32)
 
