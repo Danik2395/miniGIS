@@ -15,9 +15,24 @@ import gengine.compare.doubles;
 
 export namespace geng
 {
-struct Vec2;
+struct [[nodiscard]] Point;
 
-struct [[nodiscard]] Point
+struct [[nodiscard]] Segment;
+
+struct [[nodiscard]] LineString;
+
+struct [[nodiscard]] Polygon;
+
+struct [[nodiscard]] Vec2;
+
+struct [[nodiscard]] Matrix3;
+} // namespace geng
+
+
+
+namespace geng
+{
+struct Point
 {
     double x = 0, y = 0;
 
@@ -47,7 +62,7 @@ struct [[nodiscard]] Point
     Point operator-(geng::Vec2 vec) const;
 };
 
-struct [[nodiscard]] Segment
+struct Segment
 {
     geng::Point p0;
     geng::Point p1;
@@ -72,18 +87,18 @@ struct [[nodiscard]] Segment
     }
 };
 
-struct [[nodiscard]] LineString
+struct LineString
 {
     std::vector<geng::Point> points;
 };
 
-struct [[nodiscard]] Polygon
+struct Polygon
 {
     std::vector<geng::Point> outer;
     std::vector<std::vector<geng::Point>> inner;
 };
 
-struct [[nodiscard]] Vec2
+struct Vec2
 {
     double x = 0, y = 0;
 
@@ -139,7 +154,7 @@ struct [[nodiscard]] Vec2
     }
 };
 
-struct [[nodiscard]] Matrix3
+struct Matrix3
 {
 private:
     enum class InitType

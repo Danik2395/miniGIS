@@ -12,6 +12,66 @@ import gengine.compare;
 export namespace geng::math
 {
 [[nodiscard]]
+double proj_coeff(geng::Vec2 vec_projecting, geng::Vec2 vec_projected);
+
+[[nodiscard]]
+double cross(geng::Vec2 vec1, geng::Vec2 vec2);
+
+[[nodiscard]]
+bool is_degenerated(const geng::Segment& seg);
+
+geng::Point max(geng::Point p1, geng::Point p2);
+
+geng::Point min(geng::Point p1, geng::Point p2);
+
+[[nodiscard]]
+double distance_euclidean(geng::Point p0, geng::Point p1);
+
+[[nodiscard]]
+double distance(geng::Point p, const geng::Segment& seg);
+
+[[nodiscard]]
+double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1);
+
+[[nodiscard]]
+double area(const geng::Polygon& poly);
+
+enum class [[nodiscard]] Orientation
+{
+    LEFT,
+    RIGHT,
+    COLLINEAR
+};
+
+geng::math::Orientation orientation(geng::Point p, const geng::Segment& seg);
+
+geng::math::Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Point seg_p1);
+
+[[nodiscard]]
+bool is_point_on_segment(geng::Point p, const geng::Segment& seg);
+
+[[nodiscard]]
+bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1);
+
+[[nodiscard]]
+std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, const geng::Segment& seg);
+
+[[nodiscard]]
+std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1);
+
+using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
+
+[[nodiscard]]
+geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2);
+
+[[nodiscard]]
+bool is_intersect(const geng::Segment& seg1, const geng::Segment& seg2);
+} // namespace geng::math
+
+
+
+namespace geng::math
+{
 double proj_coeff(geng::Vec2 vec_projecting, geng::Vec2 vec_projected)
 {
     assert(!(geng::is_zero(vec_projecting.x) && geng::is_zero(vec_projecting.y)) &&
@@ -20,13 +80,11 @@ double proj_coeff(geng::Vec2 vec_projecting, geng::Vec2 vec_projected)
     return (vec_projecting * vec_projected) / (vec_projecting * vec_projecting);
 }
 
-[[nodiscard]]
 double cross(geng::Vec2 vec1, geng::Vec2 vec2)
 {
     return vec1.x * vec2.y - vec2.x * vec1.y;
 }
 
-[[nodiscard]]
 bool is_degenerated(const geng::Segment& seg)
 {
     return seg.p0 == seg.p1;
@@ -42,7 +100,6 @@ geng::Point min(geng::Point p1, geng::Point p2)
     return p1 < p2 ? p1 : p2;
 }
 
-[[nodiscard]]
 double distance_euclidean(geng::Point p0, geng::Point p1)
 {
     double dx = p0.x - p1.x;
@@ -50,7 +107,6 @@ double distance_euclidean(geng::Point p0, geng::Point p1)
     return std::sqrt(dx * dx + dy * dy);
 }
 
-[[nodiscard]]
 double distance(geng::Point p, const geng::Segment& seg)
 {
     if (geng::math::is_degenerated(seg))
@@ -76,13 +132,11 @@ double distance(geng::Point p, const geng::Segment& seg)
     return geng::math::distance_euclidean(p, p_projection_on_segment);
 }
 
-[[nodiscard]]
 double distance(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
 {
     return geng::math::distance(p, {seg_p0, seg_p1});
 }
 
-[[nodiscard]]
 double area(const geng::Polygon& poly)
 {
     namespace views  = std::views;
@@ -111,13 +165,6 @@ double area(const geng::Polygon& poly)
     return std::abs(result_area / 2);
 }
 
-enum class [[nodiscard]] Orientation
-{
-    LEFT,
-    RIGHT,
-    COLLINEAR
-};
-
 geng::math::Orientation orientation(geng::Point p, const geng::Segment& seg)
 {
     using Orient = geng::math::Orientation;
@@ -137,7 +184,6 @@ geng::math::Orientation orientation(geng::Point p, geng::Point seg_p0, geng::Poi
     return geng::math::orientation(p, {seg_p0, seg_p1});
 }
 
-[[nodiscard]]
 bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
 {
     using Orient = geng::math::Orientation;
@@ -165,13 +211,11 @@ bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     return proj_coeff_on_guiding >= 0 && proj_coeff_on_guiding <= 1;
 }
 
-[[nodiscard]]
 bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
 {
     return geng::math::is_point_on_segment(p, {seg_p0, seg_p1});
 }
 
-[[nodiscard]]
 std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, const geng::Segment& seg)
 {
     if (p == seg.p0) return {true, {seg.p0}};
@@ -179,15 +223,11 @@ std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, const geng::
     return {false, {}};
 }
 
-[[nodiscard]]
 std::pair<bool, geng::Point> is_point_end_of_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
 {
     return geng::math::is_point_end_of_segment(p, {seg_p0, seg_p1});
 }
 
-using SegmentsIntersection = std::variant<std::monostate, geng::Point, geng::Segment>;
-
-[[nodiscard]]
 geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const geng::Segment& seg2)
 {
     bool degenerated1 = geng::math::is_degenerated(seg1);
@@ -263,7 +303,6 @@ geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const g
     return geng::Segment(intersection_point_begin, intersection_point_end);
 }
 
-[[nodiscard]]
 bool is_intersect(const geng::Segment& seg1, const geng::Segment& seg2)
 {
     return !std::holds_alternative<std::monostate>(geng::math::intersection(seg1, seg2));
