@@ -154,6 +154,9 @@ struct Vec2
     }
 };
 
+template<typename PredFn>
+concept ZipMatrixPred = std::regular_invocable<PredFn, double, double>;
+
 struct Matrix3
 {
 private:
@@ -258,12 +261,7 @@ public:
         };
     }
 
-    Matrix3 operator*(double scalar) const
-    {
-        Matrix3 matrix_out_of_scalars = Matrix3::Full(scalar);
-        return zip_with_predicate(matrix_out_of_scalars, std::multiplies{});
-    }
-
+    Matrix3 operator*(double scalar)            const { return zip_with_predicate(scalar, std::multiplies{}); }
     Matrix3 operator+(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::plus{}); }
     Matrix3 operator-(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::minus{}); }
 
@@ -277,10 +275,17 @@ public:
     }
 
 private:
-    Matrix3 zip_with_predicate(const Matrix3& other_mtx, std::regular_invocable<double, double> auto pred) const
+    Matrix3 zip_with_predicate(const Matrix3& other_mtx, geng::ZipMatrixPred auto pred) const
     {
         Matrix3 result_mtx;
         std::transform(begin(), end(), other_mtx.begin(), result_mtx.begin(), pred);
+        return result_mtx;
+    }
+
+    Matrix3 zip_with_predicate(double scalar, geng::ZipMatrixPred auto pred) const
+    {
+        Matrix3 result_mtx;
+        std::transform(begin(), end(), result_mtx.begin(), [&pred, &scalar](double v){ return pred(scalar, v); });
         return result_mtx;
     }
 };
