@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: [-ferror-limit=0]
+
+Diagnostics:
+  Suppress:
+    - global_module_introducer_not_at_start
