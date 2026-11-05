@@ -26,6 +26,7 @@ FetchContent_MakeAvailable(entt)
 target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types.cppm
     src/types/types-primitives.cppm
+    src/types/types-precision.cppm
     src/math.cppm
     src/compare/compare.cppm
     src/compare/compare-doubles.cppm
