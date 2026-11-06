@@ -33,8 +33,6 @@ target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/compare/compare-primitives.cppm
 )
 
-target_precompile_headers(${PROJECT_NAME}_core PRIVATE <entt/entt.hpp>)
-
 target_link_libraries(${PROJECT_NAME}_core PUBLIC EnTT::EnTT)
 
 add_executable(${PROJECT_NAME} WIN32)
@@ -79,7 +77,6 @@ if(BUILD_TESTS)
 
     target_precompile_headers(${PROJECT_NAME}_tests PRIVATE
         <gtest/gtest.h>
-        <entt/entt.hpp>
     )
 
     target_link_libraries(${PROJECT_NAME}_tests PRIVATE
