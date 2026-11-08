@@ -30,7 +30,7 @@ class Doc
 
     Doc(entt::registry& reg) :
         registry(reg),
-        cached_quantize_precision(reg.ctx().get<geng::Precision>())
+        cached_quantize_precision(reg.ctx().get<geng::QuantizePrecision>())
     {};
 
 public:

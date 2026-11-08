@@ -29,8 +29,7 @@ class [[nodiscard]] CacheQuantizePrecision;
 
 namespace geng
 {
-constexpr geng::Precision quantize_default_precision = {1e-9, 1e+9};
-thread_local geng::Precision quantize_precision = quantize_default_precision;
+thread_local geng::Precision quantize_precision = {1e-9, 1e+9};
 
 int64_t quantize(double val)
 {
@@ -63,10 +62,10 @@ namespace geng::compare
 {
 class CacheQuantizePrecision
 {
-    geng::Precision previous_precision;
+    geng::QuantizePrecision previous_precision;
 
 public:
-    explicit CacheQuantizePrecision(geng::Precision prec)
+    explicit CacheQuantizePrecision(geng::QuantizePrecision prec)
     {
         previous_precision = quantize_precision;
         quantize_precision = prec;
