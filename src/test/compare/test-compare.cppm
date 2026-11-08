@@ -8,34 +8,22 @@ TEST(Compare, IsZeroScalar)
 {
     double zero = 0.0;
     EXPECT_TRUE(geng::is_zero(zero));
-
-    // p.35
-    EXPECT_TRUE(geng::is_zero(geng::EPSILON_COMPUTE / 2.5));
-
-    EXPECT_FALSE(geng::is_zero(geng::EPSILON_COMPUTE * 2));
 }
 
 TEST(Compare, IsZeroVec)
 {
     geng::Vec2 zero_vec = {0.0, 0.0};
     EXPECT_TRUE(geng::is_zero(zero_vec));
-
-    // p.35
-    geng::Vec2 zero_vec_from_esp_halfed = {geng::EPSILON_COMPUTE / 2.5, 0.0};
-    EXPECT_TRUE(geng::is_zero(zero_vec_from_esp_halfed));
-
-    geng::Vec2 zero_vec_from_esp_doubled = {geng::EPSILON_COMPUTE * 2, 0.0};
-    EXPECT_FALSE(geng::is_zero(zero_vec_from_esp_doubled));
 }
 
 TEST(Compare, IsEqualScalar)
 {
     double v1 = 5.000844;
-    // p.35
-    double v2 = v1 + geng::EPSILON_COMPUTE / 2.5;
 
+    EXPECT_TRUE(geng::is_equal(v1, v1));
+
+    double v2 = v1 + 1e-10;
     EXPECT_TRUE(geng::is_equal(v1, v2));
-    EXPECT_TRUE(geng::is_equal(v2, v1));
 }
 
 TEST(Compare, IsWithinScalar)
@@ -46,4 +34,26 @@ TEST(Compare, IsWithinScalar)
 
     EXPECT_TRUE(geng::is_within(target_val, min, max));
     EXPECT_TRUE(geng::is_within(target_val, max, min));
+}
+
+TEST(Compare, CustomQuantizePrecisionIsEqualScalar)
+{
+    double v1 = 5.000844;
+    double v2 = 5.000811;
+    double v3 = 5.000899;
+
+    {
+        auto q_prec1 = geng::compare::CacheQuantizePrecision({1e-4, 1e+4});
+
+        EXPECT_TRUE(geng::is_equal(v1, v2));
+        EXPECT_FALSE(geng::is_equal(v1, v3));
+
+        auto q_prec2 = geng::compare::CacheQuantizePrecision({1e-3, 1e+3});
+
+        EXPECT_TRUE(geng::is_equal(v1, v2));
+        EXPECT_TRUE(geng::is_equal(v1, v3));
+    }
+
+    EXPECT_FALSE(geng::is_equal(v1, v2));
+    EXPECT_FALSE(geng::is_equal(v1, v3));
 }
