@@ -63,6 +63,7 @@ if(BUILD_TESTS)
 
     target_sources(${PROJECT_NAME}_tests PRIVATE FILE_SET CXX_MODULES FILES
         src/test/test.cppm
+        src/test/test-base.cppm
         src/test/math/test-math_area.cppm
         src/test/math/test-math_distance.cppm
         src/test/math/test-math_intersection.cppm
