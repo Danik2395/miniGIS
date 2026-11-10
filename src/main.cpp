@@ -1,6 +1,12 @@
-import gengine.types;
+#include <QApplication>
+#include "ui/gappwindow.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    return 0;
+    QApplication app(argc, argv);
+
+    GAppWindow g_app_window;
+    g_app_window.show();
+
+    return app.exec();
 }

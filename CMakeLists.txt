@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
-# set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTORCC ON)
 
 include(FetchContent)
 
@@ -40,6 +40,11 @@ add_executable(${PROJECT_NAME} WIN32)
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/main.cpp
+    src/ui/gappwindow.h
+    src/ui/gappwindow.cpp
+    src/ui/gappwindow.ui
+    src/ui/gcanvas.h
+    src/ui/gcanvas.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -48,6 +53,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Gui
     Qt6::Widgets
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(BUILD_TESTS)
     FetchContent_Declare(
