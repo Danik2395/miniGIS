@@ -10,7 +10,7 @@ module;
 #include <array>
 #include <concepts>
 #include <cstddef>
-export module gengine.types:primitives;
+export module gengine.types.primitives;
 import gengine.compare.doubles;
 
 export namespace geng
@@ -41,7 +41,7 @@ struct Point
     {
         assert(!std::isnan(x) && !std::isnan(other_p.x) &&
                !std::isnan(y) && !std::isnan(other_p.y) &&
-                "operator<=>: NaN is not allowed.");
+                "Point::operator<=>: NaN is not allowed.");
 
         if (auto cmp = geng::quantize(x) <=> geng::quantize(other_p.x); cmp != 0)
         {
