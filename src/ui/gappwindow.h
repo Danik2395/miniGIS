@@ -1,8 +1,6 @@
 #pragma once
 #include <QMainWindow>
 #include <QObject>
-#include <new>
-#include "ui_gappwindow.h"
 
 namespace Ui
 {
@@ -17,14 +15,7 @@ private:
     Ui::GAppWindow* ui = nullptr;
 
 public:
-    explicit GAppWindow(QMainWindow* parent = nullptr) : QMainWindow(parent), ui(new Ui::GAppWindow)
-    {
-        ui->setupUi(this);
-        ui->canvas->draw();
-    }
+    explicit GAppWindow(QMainWindow* parent = nullptr);
 
-    ~GAppWindow()
-    {
-        delete ui;
-    }
+    ~GAppWindow();
 };
