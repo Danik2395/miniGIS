@@ -41,7 +41,7 @@ struct Color
 
     static constexpr Color RGB(uint32_t hex)
     {
-        return RGBA(hex & 0xFFFFFF00 + 0x000000FF);
+        return RGBA((hex << 8) | 0x000000FF);
     }
 };
 
