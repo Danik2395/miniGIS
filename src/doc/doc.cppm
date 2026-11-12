@@ -44,6 +44,11 @@ public:
     {
         return registry;
     }
+
+    const entt::registry& reg() const
+    {
+        return registry;
+    }
 };
 
 class AppState
