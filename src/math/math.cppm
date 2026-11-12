@@ -234,7 +234,7 @@ geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const g
     bool degenerated2 = geng::math::is_degenerated(seg2);
 
     if (degenerated1 && geng::math::is_point_on_segment(seg1.p0, seg2)) return seg1.p0;
-    if (degenerated1 && geng::math::is_point_on_segment(seg2.p0, seg1)) return seg2.p0;
+    if (degenerated2 && geng::math::is_point_on_segment(seg2.p0, seg1)) return seg2.p0;
 
     if (degenerated1 || degenerated2) return std::monostate();
 
