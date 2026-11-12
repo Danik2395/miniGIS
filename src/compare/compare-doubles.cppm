@@ -29,7 +29,7 @@ class [[nodiscard]] CacheQuantizePrecision;
 
 namespace geng
 {
-thread_local geng::Precision quantize_precision = {1e-9, 1e+9};
+thread_local geng::QuantizePrecision quantize_precision = {1e-9, 1e+9};
 
 int64_t quantize(double val)
 {
