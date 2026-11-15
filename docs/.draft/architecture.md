@@ -36,11 +36,13 @@ Cached precision will live till the task end and set back to default afterwards.
 - Parameter for math functions
 
 ## main
-Initialize entt::registry,\
+Initialize geng::AppState,\
 set Qt styles,\
 create Qt window.
 
-## class QGFrontend
+## class GAppWindow
+
+## class GCanvas
 
 ## module gengine.camera
 - pan
@@ -92,9 +94,16 @@ Operation on seen on map entities.
 - query_draw_sequence
 
 ## module gengine.serialization
-- load_data_from_wkt_file
-- load_data_to_wkt_file
+Know what files are supported (.gpkg).render
+Calls convert system.
+
+- load_data_from_file
+- load_data_to_file
 - validate_file_wkt
+
+## module gengine.convert
+- wkb_to_wkt
+- wkt_to_wkb
 
 ## module gengine.math
 
