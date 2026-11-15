@@ -2,6 +2,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include <memory>
+#include <filesystem>
 
 namespace geng
 {
@@ -23,6 +24,8 @@ private:
 
 public:
     explicit GAppWindow(QMainWindow* parent = nullptr);
+
+    void open_file(const std::filesystem::path& path);
 
     void update_canvas();
 
