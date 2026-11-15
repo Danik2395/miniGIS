@@ -1,4 +1,5 @@
 module;
+#include <ranges>
 #include <vector>
 export module gengine.render;
 import gengine.doc;
@@ -15,23 +16,31 @@ std::vector<geng::RenderUnit> query_draw_sequence(const geng::Doc& doc);
 
 namespace geng::render
 {
+geng::RenderUnit create_render_unit(auto&& group)
+{
+    const auto& [entity, geom, style] = group;
+
+    // п.56
+
+    return geng::RenderUnit(geom, style);
+}
+
 std::vector<geng::RenderUnit> query_draw_sequence(const geng::Doc& doc)
 {
-    std::vector<geng::RenderUnit> sequence;
+    const auto& reg = doc.reg();
 
-    sequence.emplace_back(
-                geng::LineString({{50, 50}, {150, 150}}),
-                geng::Color::RGBA(0xFFC0CBFF),
-                geng::Color::RGBA(0),
-                5.0
-                );
-    sequence.emplace_back(
-                geng::LineString({{150, 150}, {200, 50}}),
-                geng::Color::RGB(0x00FF00),
-                geng::Color::RGBA(0),
-                5.0
-                );
+    // п.55
+    const auto raw_component_view = reg.view<const geng::Geometry, const geng::Style>();
 
-    return sequence;
+    auto render_unit_view = raw_component_view.each() | std::views::transform([](auto&& group) {
+            return geng::render::create_render_unit(group);
+            });
+
+    std::vector<geng::RenderUnit> draw_sequence;
+    draw_sequence.reserve(raw_component_view.size_hint());
+
+    draw_sequence.append_range(render_unit_view);
+
+    return draw_sequence;
 }
 } // namespace geng
