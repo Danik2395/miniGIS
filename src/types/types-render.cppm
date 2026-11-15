@@ -7,6 +7,8 @@ export namespace geng
 {
 struct [[nodiscard]] Color;
 
+struct [[nodiscard]] Style;
+
 struct [[nodiscard]] RenderUnit;
 } // namespace geng
 
@@ -20,6 +22,8 @@ struct Color
     uint8_t g = 0;
     uint8_t b = 0;
     uint8_t a = 255;
+
+    constexpr Color() = default;
 
     constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
 
@@ -39,11 +43,22 @@ struct Color
     }
 };
 
+struct Style
+{
+    geng::Color main_color;
+    geng::Color fill_color;
+    float thickness = 0;
+
+    constexpr Style() = default;
+
+    constexpr Style(geng::Color main_color, geng::Color fill_color, float thickness)
+        : main_color(main_color), fill_color(fill_color), thickness(thickness)
+    {}
+};
+
 struct RenderUnit
 {
     geng::Geometry geometry;
-    geng::Color main_color;
-    geng::Color fill_color;
-    float thickness;
+    geng::Style style;
 };
 }
