@@ -5,6 +5,7 @@ module;
 #include <initializer_list>
 #include <vector>
 #include <compare>
+#include <variant>
 #include <algorithm>
 #include <ranges>
 #include <array>
@@ -26,6 +27,10 @@ struct [[nodiscard]] Polygon;
 struct [[nodiscard]] Vec2;
 
 struct [[nodiscard]] Matrix3;
+
+using Geometry = std::variant<geng::Point,
+                              geng::LineString,
+                              geng::Polygon>;
 } // namespace geng
 
 

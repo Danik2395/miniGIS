@@ -1,16 +1,10 @@
 module;
-#include <variant>
 #include <cstdint>
 export module gengine.types.render;
 import gengine.types.primitives;
 
 export namespace geng
 {
-using Geometry = std::variant<geng::Point,
-                              geng::Segment,
-                              geng::LineString,
-                              geng::Polygon>;
-
 struct [[nodiscard]] Color;
 
 struct [[nodiscard]] RenderUnit;
