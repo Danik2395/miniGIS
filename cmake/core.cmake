@@ -1,4 +1,4 @@
-add_library(${PROJECT_NAME}_core OBJECT)
+add_library(miniGIS_core OBJECT)
 
 FetchContent_Declare(
     entt
@@ -8,7 +8,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(entt)
 
-target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
+target_sources(miniGIS_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types.cppm
     src/types/types-primitives.cppm
     src/types/types-precision.cppm
@@ -22,4 +22,4 @@ target_sources(${PROJECT_NAME}_core PUBLIC FILE_SET CXX_MODULES FILES
     src/serialization/serialization.cppm
 )
 
-target_link_libraries(${PROJECT_NAME}_core PUBLIC EnTT::EnTT)
+target_link_libraries(miniGIS_core PUBLIC EnTT::EnTT)

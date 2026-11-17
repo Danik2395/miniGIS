@@ -1,6 +1,6 @@
-add_executable(${PROJECT_NAME} WIN32)
+add_executable(miniGIS WIN32)
 
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(miniGIS PRIVATE
     src/main.cpp
     src/ui/gappwindow.h
     src/ui/gappwindow.cpp
@@ -9,11 +9,11 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/ui/gcanvas.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    ${PROJECT_NAME}_core
+target_link_libraries(miniGIS PRIVATE
+    miniGIS_core
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(miniGIS PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

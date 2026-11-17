@@ -8,9 +8,9 @@ if(BUILD_TESTS)
 
     enable_testing()
 
-    add_executable(${PROJECT_NAME}_tests)
+    add_executable(miniGIS_tests)
 
-    target_sources(${PROJECT_NAME}_tests PRIVATE FILE_SET CXX_MODULES FILES
+    target_sources(miniGIS_tests PRIVATE FILE_SET CXX_MODULES FILES
         src/test/test.cppm
         src/test/test-base.cppm
         src/test/math/test-math_area.cppm
@@ -27,15 +27,15 @@ if(BUILD_TESTS)
         src/test/compare/test-compare.cppm
     )
 
-    target_precompile_headers(${PROJECT_NAME}_tests PRIVATE
+    target_precompile_headers(miniGIS_tests PRIVATE
         <gtest/gtest.h>
     )
 
-    target_link_libraries(${PROJECT_NAME}_tests PRIVATE
-        ${PROJECT_NAME}_core
+    target_link_libraries(miniGIS_tests PRIVATE
+        miniGIS_core
         GTest::gtest_main
     )
 
     include(GoogleTest)
-    gtest_discover_tests(${PROJECT_NAME}_tests)
+    gtest_discover_tests(miniGIS_tests)
 endif()
