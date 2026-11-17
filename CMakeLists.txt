@@ -13,6 +13,8 @@ include(FetchContent)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
+include(cmake/options.cmake)
+
 include(cmake/core.cmake)
 
 include(cmake/miniGIS.cmake)

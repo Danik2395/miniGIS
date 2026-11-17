@@ -13,6 +13,8 @@
             {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TESTS": "ON",
+                "ENABLE_SANITIZERS": "OFF",
+                "ENABLE_COVERAGE": "ON",
                 "gtest_force_shared_crt": {
                     "type": "BOOL",
                     "value": "ON"

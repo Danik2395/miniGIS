@@ -33,6 +33,7 @@ if(BUILD_TESTS)
 
     target_link_libraries(miniGIS_tests PRIVATE
         miniGIS_core
+        miniGIS_options
         GTest::gtest_main
     )
 

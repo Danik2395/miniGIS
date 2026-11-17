@@ -11,6 +11,7 @@ target_sources(miniGIS PRIVATE
 
 target_link_libraries(miniGIS PRIVATE
     miniGIS_core
+    miniGIS_options
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
