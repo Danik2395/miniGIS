@@ -1,5 +1,6 @@
 BUILD_DIR     := justfile_directory() + "/build"
 DEBUG_DIR     := BUILD_DIR + "/debug"
+DEBUG_SAN_DIR := BUILD_DIR + "/debug-san"
 TEST_DIR      := BUILD_DIR + "/debug"
 
 default:
@@ -13,6 +14,12 @@ debug:
     @cmake --preset debug
     @cmake --build --preset debug
     @ln -s -r {{DEBUG_DIR}}/compile_commands.json {{BUILD_DIR}} || true
+
+debug-san:
+    @mkdir -p {{DEBUG_SAN_DIR}}
+    @cmake --preset debug-san
+    @cmake --build --preset debug-san
+    @ln -s -r {{DEBUG_SAN_DIR}}/compile_commands.json {{BUILD_DIR}} || true
 
 test-all: debug
     @ctest --test-dir {{TEST_DIR}} --output-on-failure
