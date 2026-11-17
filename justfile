@@ -1,6 +1,6 @@
-BUILD_DIR := "./build"
-DEBUG_DIR := "./build/debug"
-TEST_DIR  := "./build/debug"
+BUILD_DIR     := justfile_directory() + "/build"
+DEBUG_DIR     := BUILD_DIR + "/debug"
+TEST_DIR      := BUILD_DIR + "/debug"
 
 default:
     @just --list
@@ -25,3 +25,17 @@ testf test_full_name: debug
 
 test-list:
     @ctest --test-dir {{TEST_DIR}} -N
+
+cov: debug
+    @rm -rf "{{TEST_DIR}}/coverage" && mkdir -p "{{TEST_DIR}}/coverage"
+    @mkdir -p "{{BUILD_DIR}}/coverage"
+    @LLVM_PROFILE_FILE="{{TEST_DIR}}/coverage/%p.profraw" ctest --test-dir {{TEST_DIR}} --output-on-failure
+    @llvm-profdata merge -sparse "{{TEST_DIR}}/coverage/"*.profraw -o "{{TEST_DIR}}/coverage/all.profdata"
+    @llvm-cov show {{TEST_DIR}}/miniGIS_tests \
+        -instr-profile="{{TEST_DIR}}/coverage/all.profdata" \
+        -output-dir="{{BUILD_DIR}}/coverage" \
+        -format=html \
+        -show-directory-coverage=true \
+        --show-branches=count \
+        --ignore-filename-regex='src/test' \
+        src/
