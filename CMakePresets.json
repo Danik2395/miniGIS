@@ -20,12 +20,25 @@
                     "value": "ON"
                 }
             }
+        },
+        {
+            "name": "debug-san",
+            "inherits": "debug",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "ENABLE_SANITIZERS": "ON",
+                "ENABLE_COVERAGE": "OFF"
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "debug",
             "configurePreset": "debug"
+        },
+        {
+            "name": "debug-san",
+            "configurePreset": "debug-san"
         }
     ]
 }
