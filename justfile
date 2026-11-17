@@ -17,14 +17,17 @@ debug:     (_debug "debug")
 
 debug-san: (_debug "debug-san")
 
+_test test_command:
+    @ctest --test-dir {{TEST_DIR}} --output-on-failure {{test_command}}
+
 test-all: debug
-    @ctest --test-dir {{TEST_DIR}} --output-on-failure
+    @just _test ''
 
 test test_suite: debug
-    @ctest --test-dir {{TEST_DIR}} --output-on-failure -R "^{{test_suite}}\."
+    @just _test '-R "^{{test_suite}}\."'
 
 testf test_full_name: debug
-    @ctest --test-dir {{TEST_DIR}} --output-on-failure -R "^{{test_full_name}}$"
+    @just _test '-R "^{{test_full_name}}$"'
 
 test-list:
     @ctest --test-dir {{TEST_DIR}} -N
