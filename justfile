@@ -1,7 +1,5 @@
-BUILD_DIR     := justfile_directory() + "/build"
-DEBUG_DIR     := BUILD_DIR + "/debug"
-DEBUG_SAN_DIR := BUILD_DIR + "/debug-san"
-TEST_DIR      := BUILD_DIR + "/debug"
+BUILD_DIR := justfile_directory() + "/build"
+TEST_DIR  := BUILD_DIR + "/debug"
 
 default:
     @just --list
@@ -9,17 +7,15 @@ default:
 clean:
     @rm -rf {{BUILD_DIR}} .cache Testing
 
-debug:
-    @mkdir -p {{DEBUG_DIR}}
-    @cmake --preset debug
-    @cmake --build --preset debug
-    @ln -s -r {{DEBUG_DIR}}/compile_commands.json {{BUILD_DIR}} || true
+_debug preset:
+    @mkdir -p {{BUILD_DIR}}/{{preset}}
+    @cmake --preset {{preset}}
+    @cmake --build --preset {{preset}}
+    @ln -srf {{BUILD_DIR}}/{{preset}}/compile_commands.json {{BUILD_DIR}} || true
 
-debug-san:
-    @mkdir -p {{DEBUG_SAN_DIR}}
-    @cmake --preset debug-san
-    @cmake --build --preset debug-san
-    @ln -s -r {{DEBUG_SAN_DIR}}/compile_commands.json {{BUILD_DIR}} || true
+debug:     (_debug "debug")
+
+debug-san: (_debug "debug-san")
 
 test-all: debug
     @ctest --test-dir {{TEST_DIR}} --output-on-failure
