@@ -1,5 +1,6 @@
-BUILD_DIR := justfile_directory() + "/build"
-TEST_DIR  := BUILD_DIR + "/debug"
+CURRENT_DIR := justfile_directory()
+BUILD_DIR   := CURRENT_DIR + "/build"
+TEST_DIR    := BUILD_DIR   + "/debug"
 
 default:
     @just --list
@@ -24,7 +25,10 @@ test-all: debug
     @just _test ''
 
 test test_suite: debug
-    @just _test '-R "^{{test_suite}}\."'
+    @just _test '-R "^.*_{{test_suite}}\."'
+
+testm test_module: debug
+    @just _test '-R "^{{test_module}}_"'
 
 testf test_full_name: debug
     @just _test '-R "^{{test_full_name}}$"'
@@ -32,10 +36,10 @@ testf test_full_name: debug
 test-list:
     @ctest --test-dir {{TEST_DIR}} -N
 
-cov: debug
-    @rm -rf "{{TEST_DIR}}/coverage" && mkdir -p "{{TEST_DIR}}/coverage"
+cov mod: debug
+    @rm -rf "{{TEST_DIR}}/coverage" "{{BUILD_DIR}}/coverage" && mkdir -p "{{TEST_DIR}}/coverage"
     @mkdir -p "{{BUILD_DIR}}/coverage"
-    @LLVM_PROFILE_FILE="{{TEST_DIR}}/coverage/%p.profraw" ctest --test-dir {{TEST_DIR}} --output-on-failure
+    @LLVM_PROFILE_FILE="{{TEST_DIR}}/coverage/%p.profraw" just testm '{{mod}}'
     @llvm-profdata merge -sparse "{{TEST_DIR}}/coverage/"*.profraw -o "{{TEST_DIR}}/coverage/all.profdata"
     @llvm-cov show {{TEST_DIR}}/miniGIS_tests \
         -instr-profile="{{TEST_DIR}}/coverage/all.profdata" \
@@ -43,5 +47,7 @@ cov: debug
         -format=html \
         -show-directory-coverage=true \
         --show-branches=count \
-        --ignore-filename-regex='src/test' \
-        src/
+        --ignore-filename-regex='(src/test|src/ui|build)' \
+        --include-filename-regex='src/{{mod}}/'
+
+cov-all: (cov '.*')
