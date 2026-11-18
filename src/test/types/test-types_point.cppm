@@ -3,7 +3,7 @@ module;
 export module geotest:types_point;
 import gengine.types;
 
-TEST(Point, Constructors)
+TEST(types_Point, Constructors)
 {
     double x = 1, y = 5;
 

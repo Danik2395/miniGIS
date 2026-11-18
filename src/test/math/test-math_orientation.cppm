@@ -4,7 +4,7 @@ export module geotest:math_orientation;
 import gengine.types;
 import gengine.math;
 
-TEST(Orientation, PointToSegmentPointNotOnSegment)
+TEST(math_Orientation, PointToSegmentPointNotOnSegment)
 {
     geng::Point seg_p0(5, 5);
     geng::Point seg_p1(20, 10);
@@ -18,7 +18,7 @@ TEST(Orientation, PointToSegmentPointNotOnSegment)
     EXPECT_EQ(geng::math::orientation(collinear_point, seg_p0, seg_p1), geng::math::Orientation::COLLINEAR);
 }
 
-TEST(Orientation, PointOnSegmentToThatSegment)
+TEST(math_Orientation, PointOnSegmentToThatSegment)
 {
     geng::Point seg_p0(1, 3);
     geng::Point seg_p1(5, 7);

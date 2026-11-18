@@ -3,7 +3,7 @@ module;
 export module geotest:types_vec2;
 import gengine.types;
 
-TEST(Vec2, Constructors)
+TEST(types_Vec2, Constructors)
 {
     double x = 1, y = 5;
 

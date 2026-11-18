@@ -27,7 +27,7 @@ void expect_matrix(const geng::Matrix3& mtx, const geng::Matrix3& other_mtx)
                   other_mtx.m[6], other_mtx.m[7], other_mtx.m[8]);
 }
 
-TEST(Matrix3, Constructors)
+TEST(types_Matrix3, Constructors)
 {
     double m0 = 0, m1 = 1, m2 = 2;
     double m3 = 3, m4 = 4, m5 = 5;
@@ -69,7 +69,7 @@ TEST(Matrix3, Constructors)
                                    0, 0, 1);
 }
 
-TEST(Matrix3, MultiplyMatrix)
+TEST(types_Matrix3, MultiplyMatrix)
 {
     geng::Matrix3 mtx1 = {
         0, 1, 2,
@@ -98,7 +98,7 @@ TEST(Matrix3, MultiplyMatrix)
     expect_matrix(mtx2 * mtx1, result_multiplication_mtx2_mtx1);
 }
 
-TEST(Matrix3, MultiplyVec)
+TEST(types_Matrix3, MultiplyVec)
 {
     geng::Matrix3 mtx = {
         4, 0, 5,
@@ -115,7 +115,7 @@ TEST(Matrix3, MultiplyVec)
     EXPECT_DOUBLE_EQ(result_vec.y, result_vec_expected.y);
 }
 
-TEST(Matrix3, MultiplyScalar)
+TEST(types_Matrix3, MultiplyScalar)
 {
     geng::Matrix3 mtx = {
         0, 1, 2,
@@ -134,7 +134,7 @@ TEST(Matrix3, MultiplyScalar)
     expect_matrix(mtx * scalar, result_mtx);
 }
 
-TEST(Matrix3, Addition)
+TEST(types_Matrix3, Addition)
 {
     geng::Matrix3 mtx1 = geng::Matrix3::Full(5);
     geng::Matrix3 mtx2 = geng::Matrix3::Full(1);
@@ -144,7 +144,7 @@ TEST(Matrix3, Addition)
     expect_matrix(mtx1 + mtx2, result_mtx);
 }
 
-TEST(Matrix3, Substraction)
+TEST(types_Matrix3, Substraction)
 {
     geng::Matrix3 mtx1 = geng::Matrix3::Full(5);
     geng::Matrix3 mtx2 = geng::Matrix3::Full(1);
@@ -155,7 +155,7 @@ TEST(Matrix3, Substraction)
 }
 
 
-TEST(Matrix3, Determinant)
+TEST(types_Matrix3, Determinant)
 {
     geng::Matrix3 mtx = {
         1, 1, 2,

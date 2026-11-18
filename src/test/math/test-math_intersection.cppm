@@ -4,7 +4,7 @@ export module geotest:math_intersection;
 import gengine.types;
 import gengine.math;
 
-TEST(Intersection, SinglePointNonCollinearSegmentIntersection)
+TEST(math_Intersection, SinglePointNonCollinearSegmentIntersection)
 {
     geng::Segment seg1 = {{1, 1}, {3, 5}};
 
@@ -21,21 +21,21 @@ TEST(Intersection, SinglePointNonCollinearSegmentIntersection)
     EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg_vertical1, seg_horisontal)), geng::Point(2, 3));
 }
 
-TEST(Intersection, SinglePointCollinearSegmentIntersection)
+TEST(math_Intersection, SinglePointCollinearSegmentIntersection)
 {
     geng::Segment seg1 = {{1, 1}, {3, 5}};
     geng::Segment seg2 = {{3, 5}, {7, 13}};
     EXPECT_EQ(std::get<geng::Point>(geng::math::intersection(seg1, seg2)), geng::Point(3, 5));
 }
 
-TEST(Intersection, NoIntersectionSegmentIntersiction)
+TEST(math_Intersection, NoIntersectionSegmentIntersiction)
 {
     geng::Segment seg1 = {{1, 1}, {3, 5}};
     geng::Segment seg2 = {{-3, -5}, {-7, -13}};
     EXPECT_EQ(std::get<std::monostate>(geng::math::intersection(seg1, seg2)), std::monostate());
 }
 
-TEST(Intersection, MultiplePointCollinearSegmentIntersection)
+TEST(math_Intersection, MultiplePointCollinearSegmentIntersection)
 {
     geng::Segment seg1 = {{1, 1}, {3, 5}};
     EXPECT_EQ(std::get<geng::Segment>(geng::math::intersection(seg1, seg1)), seg1);
@@ -49,7 +49,7 @@ TEST(Intersection, MultiplePointCollinearSegmentIntersection)
             geng::Segment({5, 3}, {6, 3}));
 }
 
-TEST(Intersection, IsSegmentsIntersect)
+TEST(math_Intersection, IsSegmentsIntersect)
 {
     geng::Segment seg_intersect1 = {{1, 1}, {3, 5}};
     geng::Segment seg_intersect2 = {{1, 5}, {3, 1}};

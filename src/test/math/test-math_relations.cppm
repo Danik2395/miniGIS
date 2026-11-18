@@ -4,7 +4,7 @@ export module geotest:math_relations;
 import gengine.types;
 import gengine.math;
 
-TEST(Relations, IsPointOnSegment)
+TEST(math_Relations, IsPointOnSegment)
 {
     geng::Point seg_p0(1, 3);
     geng::Point seg_p1(5, 7);
@@ -21,7 +21,7 @@ TEST(Relations, IsPointOnSegment)
     EXPECT_TRUE(geng::math::is_point_on_segment(point_on_deg_seg, deg_seg_p0, deg_seg_p1));
 }
 
-TEST(Relations, IsPointEndOfSegment)
+TEST(math_Relations, IsPointEndOfSegment)
 {
     geng::Point seg_p0(1, 3);
     geng::Point seg_p1(5, 7);

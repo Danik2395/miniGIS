@@ -4,19 +4,19 @@ export module geotest:compare;
 import gengine.types;
 import gengine.compare;
 
-TEST(Compare, IsZeroScalar)
+TEST(compare_Compare, IsZeroScalar)
 {
     double zero = 0.0;
     EXPECT_TRUE(geng::is_zero(zero));
 }
 
-TEST(Compare, IsZeroVec)
+TEST(compare_Compare, IsZeroVec)
 {
     geng::Vec2 zero_vec = {0.0, 0.0};
     EXPECT_TRUE(geng::is_zero(zero_vec));
 }
 
-TEST(Compare, IsEqualScalar)
+TEST(compare_Compare, IsEqualScalar)
 {
     double v1 = 5.000844;
 
@@ -26,7 +26,7 @@ TEST(Compare, IsEqualScalar)
     EXPECT_TRUE(geng::is_equal(v1, v2));
 }
 
-TEST(Compare, IsWithinScalar)
+TEST(compare_Compare, IsWithinScalar)
 {
     double min = 5.000844;
     double max = 5.000744;
@@ -36,7 +36,7 @@ TEST(Compare, IsWithinScalar)
     EXPECT_TRUE(geng::is_within(target_val, max, min));
 }
 
-TEST(Compare, CustomQuantizePrecisionIsEqualScalar)
+TEST(compare_Compare, CustomQuantizePrecisionIsEqualScalar)
 {
     double v1 = 5.000844;
     double v2 = 5.000811;

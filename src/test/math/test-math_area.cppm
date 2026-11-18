@@ -4,7 +4,7 @@ export module geotest:math_area;
 import gengine.types;
 import gengine.math;
 
-TEST(Area, PolygonWktCorrect)
+TEST(math_Area, PolygonWktCorrect)
 {
     geng::Polygon poly_only_outer = {{
         {15, 5},

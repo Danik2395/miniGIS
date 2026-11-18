@@ -4,7 +4,7 @@ export module geotest:math_distance;
 import gengine.types;
 import gengine.math;
 
-TEST(Distance, PointToSegmentPointHasProjectionOnSegment)
+TEST(math_Distance, PointToSegmentPointHasProjectionOnSegment)
 {
     geng::Point target_p = {7.7, 15.8};
     geng::Point line_p0  = {5, 5};
@@ -21,7 +21,7 @@ TEST(Distance, PointToSegmentPointHasProjectionOnSegment)
             );
 }
 
-TEST(Distance, PointToSegmentPointOutOfProjection)
+TEST(math_Distance, PointToSegmentPointOutOfProjection)
 {
     geng::Point target_p = {15.8, 5};
     geng::Point line_p0  = {5, 5};
@@ -39,7 +39,7 @@ TEST(Distance, PointToSegmentPointOutOfProjection)
             );
 }
 
-TEST(Distance, PointToVerticalSegment)
+TEST(math_Distance, PointToVerticalSegment)
 {
     geng::Point target_p = {0, 15.8};
     geng::Point line_p0  = {0, 1};
@@ -51,7 +51,7 @@ TEST(Distance, PointToVerticalSegment)
             );
 }
 
-TEST(Distance, PointToDegeneratedSegment)
+TEST(math_Distance, PointToDegeneratedSegment)
 {
     geng::Point target_p = {3.4, 2};
     geng::Point line_p0  = {4.9, 15.8};
@@ -64,7 +64,7 @@ TEST(Distance, PointToDegeneratedSegment)
             );
 }
 
-TEST(Distance, PointOnSegment)
+TEST(math_Distance, PointOnSegment)
 {
     geng::Point line_p0  = {5, 4};
     geng::Point line_p1  = {1, 0};
