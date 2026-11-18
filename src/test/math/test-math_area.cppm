@@ -12,7 +12,9 @@ TEST(math_Area, PolygonWktCorrect)
         {5, 15},
         {5, 5},
         {15, 5}
-    }};
+    },
+        {}
+    };
     EXPECT_DOUBLE_EQ(geng::math::area(poly_only_outer), 100);
 
     geng::Polygon poly_full = {{

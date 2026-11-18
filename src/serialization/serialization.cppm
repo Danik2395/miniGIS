@@ -25,7 +25,7 @@ auto get_start_to_end_axis_coordinates()
 
     auto lines_iter = std::views::iota(0, lines_count);
 
-    auto coord_range = lines_iter | std::views::transform([spacing](int i){ return start + i * spacing; });
+    auto coord_range = lines_iter | std::views::transform([](int i){ return start + i * spacing; });
 
     return coord_range;
 }
@@ -61,7 +61,7 @@ void create_lines_grid(entt::registry& reg)
     };
 
     auto get_line_style = []() {
-        return geng::Style(geng::Color::RGB(0x0000FF), geng::Color(), 2);
+        return geng::Style(geng::Color::RGB(0x0000FF), geng::Color(), 2.0f);
     };
 
     auto coord_range = get_start_to_end_axis_coordinates();
@@ -81,7 +81,7 @@ void create_lines_grid(entt::registry& reg)
 void create_points_grid(entt::registry& reg)
 {
     auto get_point_style = []() {
-        return geng::Style(geng::Color::RGB(0xFF00FF), geng::Color(), 16.888);
+        return geng::Style(geng::Color::RGB(0xFF00FF), geng::Color(), 16.888f);
     };
 
     auto coord_range = get_start_to_end_axis_coordinates();
@@ -99,7 +99,7 @@ void create_points_grid(entt::registry& reg)
 void create_poly_grid(entt::registry& reg)
 {
     auto get_point_style = []() {
-        return geng::Style(geng::Color::RGB(0xC6658F), geng::Color::RGBA(0x8F83F5A), 3);
+        return geng::Style(geng::Color::RGB(0xC6658F), geng::Color::RGBA(0x8F83F5A), 3.0f);
     };
 
     auto get_poly = [](int x, int y) {

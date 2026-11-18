@@ -61,4 +61,4 @@ struct RenderUnit
     geng::Geometry geometry;
     geng::Style style;
 };
-}
+} // namespace geng

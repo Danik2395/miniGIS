@@ -14,7 +14,7 @@ class GCanvas : public QWidget
     Q_OBJECT
 
 private:
-    std::vector<geng::RenderUnit> draw_sequence;
+    std::vector<geng::RenderUnit> draw_seq;
 
 public:
     GCanvas(QWidget* parent = nullptr);

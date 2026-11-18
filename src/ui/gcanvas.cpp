@@ -32,20 +32,20 @@ GCanvas::~GCanvas() = default;
 
 void GCanvas::draw(std::vector<geng::RenderUnit>&& draw_sequence)
 {
-    this->draw_sequence = std::move(draw_sequence);
+    this->draw_seq = std::move(draw_sequence);
     this->update();
     return;
 }
 
-void GCanvas::paintEvent(QPaintEvent *event)
+void GCanvas::paintEvent([[maybe_unused]] QPaintEvent *event)
 {
     auto painter = QPainter(this);
 
-    auto draw_unit = [this, &painter](const auto& unit) {
+    auto draw_unit = [&painter](const auto& unit) {
         std::visit(UnitDeductor{unit, painter}, unit.geometry);
     };
 
-    std::ranges::for_each(draw_sequence, draw_unit);
+    std::ranges::for_each(draw_seq, draw_unit);
 }
 
 QColor to_QColor(geng::Color color)
