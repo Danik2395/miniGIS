@@ -5,6 +5,8 @@ TEST_DIR    := BUILD_DIR   + "/debug"
 default:
     @just --list
 
+list: default
+
 clean:
     @rm -rf {{BUILD_DIR}} .cache Testing
 
