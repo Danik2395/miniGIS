@@ -3,37 +3,55 @@ module;
 #include <string>
 #include <gtest/gtest.h>
 export module geotest:compare;
+import :table;
 import gengine.types;
 import gengine.compare;
 
 namespace test::quantize
 {
-struct [[nodiscard]] QuantizeAssert
+struct [[nodiscard]] QuantizeArrange
 {
-    const std::string name;
-    const double raw_num;
-    const int64_t expected_quantized;
+    const char* name;
+    double raw_num;
+    int64_t expected_quantized;
 };
-} // test::quantize
+} // namespace test::quantize
 
 TEST(compare_Quantize, ValidNumbers)
 {
-    using test::quantize::QuantizeAssert;
+    using test::quantize::QuantizeArrange;
 
-    const std::vector<QuantizeAssert> cases = {
-        {"Positive",             59.123456,     59123456000},
-        {"QuantizeToUpperDigit", 59.9876543215, 59987654322},
-        {"QuantizeToLowerDigit", 59.9876543214, 59987654321},
-        {"Negative",            -74.9876,      -74987600000},
+    const std::vector<QuantizeArrange> quantize_table = {
+        {
+            .name = "Positive",
+            .raw_num = 59.123456,
+            .expected_quantized = 59123456000,
+        },
+
+        {
+            .name = "QuantizeToUpperDigit",
+            .raw_num = 59.9876543215,
+            .expected_quantized = 59987654322,
+        },
+
+        {
+            .name = "QuantizeToLowerDigit",
+            .raw_num = 59.9876543214,
+            .expected_quantized = 59987654321,
+        },
+
+        {
+            .name = "Negative",
+            .raw_num = -74.9876,
+            .expected_quantized = -74987600000,
+        },
     };
 
-    for (const auto& c : cases) {
-        SCOPED_TRACE(testing::Message() << "Case: " << c.name);
+    test::table::run_test_table(quantize_table, [](const QuantizeArrange& c){
+            const int64_t actual_quantize = geng::quantize(c.raw_num);
 
-        const int64_t actual_quantize = geng::quantize(c.raw_num);
-
-        EXPECT_EQ(c.expected_quantized, actual_quantize);
-    }
+            EXPECT_EQ(c.expected_quantized, actual_quantize);
+            });
 }
 
 TEST(compare_Predicates, IsZeroScalarReturnTrue)
