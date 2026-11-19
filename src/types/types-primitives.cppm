@@ -159,8 +159,8 @@ struct Vec2
     }
 };
 
-template<typename PredFn>
-concept ZipMatrixPred = std::regular_invocable<PredFn, double, double>;
+template<typename Fn>
+concept ZipMatrixOper = std::invocable<Fn, double, double>;
 
 struct Matrix3
 {
@@ -171,7 +171,7 @@ private:
         DIAGONAL
     };
 
-    explicit Matrix3(double val, InitType init_type)
+    explicit Matrix3(double val, InitType init_type) : m{}
     {
         if (init_type == InitType::DIAGONAL)
         {
@@ -210,8 +210,8 @@ public:
 
     Matrix3(std::initializer_list<double> double_sequence)
     {
-        std::ranges::copy(double_sequence | std::views::take(9), m.begin());
         assert(double_sequence.size() == 9 && "Matrix3: must be 9 values in initialization list.");
+        std::ranges::copy(double_sequence | std::views::take(9), m.begin());
     }
 
     explicit Matrix3(geng::Vec2 vec1, geng::Vec2 vec2 = {}, geng::Vec2 vec3 = {})
@@ -219,7 +219,7 @@ public:
         m = {
             vec1.x, vec2.x, vec3.x,
             vec1.y, vec2.y, vec3.y,
-            0,      0,      1
+            0.0,    0.0,    1.0
         };
     }
 
@@ -231,31 +231,42 @@ public:
                 vec_sequense.size() > 2 ? *(vec_sequense.begin() + 2) : geng::Vec2{}
                )
     {
-        assert(vec_sequense.size() <= 3 && "Matrix3: too many arguments in inidializion list.");
+        assert(vec_sequense.size() <= 3 && "Matrix3: too many arguments in initializion list.");
     }
 
     [[nodiscard]] const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
-    [[nodiscard]]       double& operator[](size_t i, size_t j)       { return m[i * 3 + j]; }
+    [[nodiscard]] double& operator[](size_t i, size_t j)
+    {
+        return const_cast<double&>(static_cast<const geng::Matrix3*>(this)->operator[](i, j));
+    }
 
     [[nodiscard]] auto begin() const { return m.begin(); }
     [[nodiscard]] auto end()   const { return m.end(); }
     [[nodiscard]] auto begin()       { return m.begin(); }
     [[nodiscard]] auto end()         { return m.end(); }
 
+    [[nodiscard]] auto size() const { return m.size(); }
+
     [[nodiscard]]
     Matrix3 operator*(const Matrix3& other_mtx) const
     {
-        Matrix3 res;
-        for (size_t i = 0; i < 3; ++i)
-        {
-            for (size_t j = 0; j < 3; ++j)
-            {
-                res[i, j] = (*this)[i, 0] * other_mtx[0, j] +
-                            (*this)[i, 1] * other_mtx[1, j] +
-                            (*this)[i, 2] * other_mtx[2, j];
-            }
-        }
-        return res;
+        auto get_multiplied_elem = [&other_mtx, this](const auto& indexes) {
+            auto [i, j] = indexes;
+
+            return (*this)[i, 0] * other_mtx[0, j] +
+                   (*this)[i, 1] * other_mtx[1, j] +
+                   (*this)[i, 2] * other_mtx[2, j];
+        };
+
+        auto line_view = std::views::iota(size_t(0), size_t(3));
+        auto view_two_indexes = std::views::cartesian_product(line_view, line_view);
+        auto multiplied_elements = view_two_indexes | std::views::transform(get_multiplied_elem);
+
+        Matrix3 multiplication_mtx{};
+
+        std::ranges::copy(multiplied_elements, multiplication_mtx.begin());
+
+        return multiplication_mtx;
     }
 
     geng::Vec2 operator*(const geng::Vec2& vec) const
@@ -266,9 +277,9 @@ public:
         };
     }
 
-    Matrix3 operator*(double scalar)            const { return zip_with_predicate(scalar, std::multiplies{}); }
-    Matrix3 operator+(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::plus{}); }
-    Matrix3 operator-(const Matrix3& other_mtx) const { return zip_with_predicate(other_mtx, std::minus{}); }
+    Matrix3 operator*(double scalar)            const { return zip_with_oper(scalar, std::multiplies{}); }
+    Matrix3 operator+(const Matrix3& other_mtx) const { return zip_with_oper(other_mtx, std::plus{}); }
+    Matrix3 operator-(const Matrix3& other_mtx) const { return zip_with_oper(other_mtx, std::minus{}); }
 
     [[nodiscard]]
     double det() const
@@ -280,17 +291,17 @@ public:
     }
 
 private:
-    Matrix3 zip_with_predicate(const Matrix3& other_mtx, geng::ZipMatrixPred auto pred) const
+    Matrix3 zip_with_oper(const Matrix3& other_mtx, geng::ZipMatrixOper auto oper) const
     {
         Matrix3 result_mtx;
-        std::transform(begin(), end(), other_mtx.begin(), result_mtx.begin(), pred);
+        std::transform(begin(), end(), other_mtx.begin(), result_mtx.begin(), oper);
         return result_mtx;
     }
 
-    Matrix3 zip_with_predicate(double scalar, geng::ZipMatrixPred auto pred) const
+    Matrix3 zip_with_oper(double scalar, geng::ZipMatrixOper auto oper) const
     {
         Matrix3 result_mtx;
-        std::transform(begin(), end(), result_mtx.begin(), [&pred, &scalar](double v){ return pred(scalar, v); });
+        std::transform(begin(), end(), result_mtx.begin(), [&oper, &scalar](double v){ return oper(scalar, v); });
         return result_mtx;
     }
 };
