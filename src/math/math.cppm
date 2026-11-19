@@ -20,10 +20,6 @@ double cross(geng::Vec2 vec1, geng::Vec2 vec2);
 [[nodiscard]]
 bool is_degenerated(const geng::Segment& seg);
 
-geng::Point max(geng::Point p1, geng::Point p2);
-
-geng::Point min(geng::Point p1, geng::Point p2);
-
 [[nodiscard]]
 double distance_euclidean(geng::Point p0, geng::Point p1);
 
@@ -88,16 +84,6 @@ double cross(geng::Vec2 vec1, geng::Vec2 vec2)
 bool is_degenerated(const geng::Segment& seg)
 {
     return seg.p0 == seg.p1;
-}
-
-geng::Point max(geng::Point p1, geng::Point p2)
-{
-    return p1 > p2 ? p1 : p2;
-}
-
-geng::Point min(geng::Point p1, geng::Point p2)
-{
-    return p1 < p2 ? p1 : p2;
 }
 
 double distance_euclidean(geng::Point p0, geng::Point p1)
