@@ -1,5 +1,6 @@
 export module geotest;
 export import :base;
+export import :table;
 export import :math_predicates;
 export import :math_distance;
 export import :math_area;
