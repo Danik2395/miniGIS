@@ -3,6 +3,8 @@ module;
 export module geotest:types_matrix3;
 import gengine.types;
 
+namespace test::matrix3
+{
 void expect_matrix(const geng::Matrix3& mtx,
                    double v0, double v1, double v2,
                    double v3, double v4, double v5,
@@ -26,142 +28,195 @@ void expect_matrix(const geng::Matrix3& mtx, const geng::Matrix3& other_mtx)
                   other_mtx.m[3], other_mtx.m[4], other_mtx.m[5],
                   other_mtx.m[6], other_mtx.m[7], other_mtx.m[8]);
 }
+} // namespace test::matrix3
 
-TEST(types_Matrix3, Constructors)
+TEST(types_Matrix3, ConstructorFull)
 {
-    double m0 = 0, m1 = 1, m2 = 2;
-    double m3 = 3, m4 = 4, m5 = 5;
-    double m6 = 6, m7 = 7, m8 = 8;
+    const double v = 9.4;
 
-    geng::Matrix3 matrix_default;
-    expect_matrix(matrix_default, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const auto full_mtx = geng::Matrix3::Full(v);
 
-    geng::Matrix3 matrix_args(m0, m1, m2, m3, m4, m5, m6, m7, m8);
-    expect_matrix(matrix_args, m0, m1, m2, m3, m4, m5, m6, m7, m8);
-
-    geng::Matrix3 matrix_list = {m0, m1, m2, m3, m4, m5, m6, m7, m8};
-    expect_matrix(matrix_list, m0, m1, m2, m3, m4, m5, m6, m7, m8);
-
-    geng::Matrix3 matrix_matrix(matrix_args);
-    expect_matrix(matrix_matrix, m0, m1, m2, m3, m4, m5, m6, m7, m8);
-
-    geng::Matrix3 matrix_matrix_list = {matrix_args};
-    expect_matrix(matrix_matrix_list, m0, m1, m2, m3, m4, m5, m6, m7, m8);
-
-    geng::Matrix3 matrix_full = geng::Matrix3::Full(m0);
-    expect_matrix(matrix_full, m0, m0, m0, m0, m0, m0, m0, m0, m0);
-
-    geng::Matrix3 matrix_diagonal = geng::Matrix3::Diagonal(m0);
-    expect_matrix(matrix_diagonal, m0, 0, 0, 0, m0, 0, 0, 0, m0);
-
-    geng::Vec2 vec1(1, 4);
-    geng::Vec2 vec2(2, 5);
-    geng::Vec2 vec3(3, 6);
-
-    geng::Matrix3 matrix_vec(vec1, vec2, vec3);
-    expect_matrix(matrix_vec, 1, 2, 3,
-                              4, 5, 6,
-                              0, 0, 1);
-
-    geng::Matrix3 matrix_vec_list = {vec1, vec2, vec3};
-    expect_matrix(matrix_vec_list, 1, 2, 3,
-                                   4, 5, 6,
-                                   0, 0, 1);
+    test::matrix3::expect_matrix(full_mtx, v, v, v, v, v, v, v, v, v);
 }
 
-TEST(types_Matrix3, MultiplyMatrix)
+TEST(types_Matrix3, ConstructorDiagonal)
 {
-    geng::Matrix3 mtx1 = {
+    const double v = 9.4;
+
+    const auto diagonal_mtx = geng::Matrix3::Diagonal(v);
+
+    test::matrix3::expect_matrix(diagonal_mtx,
+            v, 0, 0,
+            0, v, 0,
+            0, 0, v
+            );
+}
+
+TEST(types_Matrix3, ConstructorListFromScalar)
+{
+    const double v0 = 0.0, v1 = 1.4, v2 = 2.3;
+    const double v3 = 3.3, v4 = 4.3, v5 = 5.2;
+    const double v6 = 6.1, v7 = 7.4, v8 = 8.4;
+
+    const geng::Matrix3 mtx = {
+        v0, v1, v2,
+        v3, v4, v5,
+        v6, v7, v8,
+    };
+
+    test::matrix3::expect_matrix(mtx, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+}
+
+TEST(types_Matrix3, ConstructorListFromScalarWrongSizeAssert)
+{
+    const double v = 4.9;
+
+    EXPECT_DEBUG_DEATH(std::ignore = geng::Matrix3{v}, "must be 9 values");
+}
+
+TEST(types_Matrix3, ConstructorArgsFromVec2)
+{
+    const double v0 = 2.2, v1 = 0.4, v2 = 1.2;
+    const double v3 = 3.3, v4 = 6.5, v5 = 3.2;
+    const double v6 = 0.0, v7 = 0.0, v8 = 1.0;
+    const geng::Vec2 vec1(v0, v3), vec2(v1, v4), vec3(v2, v5);
+
+    const geng::Matrix3 mtx(vec1, vec2, vec3);
+
+    test::matrix3::expect_matrix(mtx, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+}
+
+TEST(types_Matrix3, ConstructorListFromVec2)
+{
+    const double v0 = 4.2, v1 = 1.4, v2 = 0.2;
+    const double v3 = 1.3, v4 = 7.5, v5 = 2.2;
+    const double v6 = 0.0, v7 = 0.0, v8 = 1.0;
+    const geng::Vec2 vec1(v0, v3), vec2(v1, v4), vec3(v2, v5);
+
+    const geng::Matrix3 mtx = {vec1, vec2, vec3};
+
+    test::matrix3::expect_matrix(mtx, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+}
+
+TEST(types_Matrix3, ConstructorListFromVec2WrongSizeAssert)
+{
+    const geng::Vec2 vec1;
+    const geng::Vec2 vec2;
+    const geng::Vec2 vec3;
+    const geng::Vec2 vec4;
+
+    EXPECT_DEBUG_DEATH((std::ignore = geng::Matrix3{vec1, vec2, vec3, vec4}), "too many arguments");
+}
+
+TEST(types_Matrix3, RandomAccessWithTwoArguments)
+{
+    const double v0 = 2.0, v1 = 3.4, v2 = 3.3;
+    const double v3 = 1.3, v4 = 3.4, v5 = 6.2;
+    const double v6 = 5.1, v7 = 6.4, v8 = 6.6;
+    geng::Matrix3 mtx = {
+        v0, v1, v2,
+        v3, v4, v5,
+        v6, v7, v8,
+    };
+
+    const double access_value = mtx[1, 2];
+
+    EXPECT_DOUBLE_EQ(v5, access_value);
+}
+
+
+
+TEST(types_Matrix3, MultiplyMatrixOnMatrix)
+{
+    const geng::Matrix3 mtx1 = {
         0, 1, 2,
         3, 4, 5,
-        6, 7, 8
+        6, 7, 8,
     };
-
-    geng::Matrix3 mtx2 = {
+    const geng::Matrix3 mtx2 = {
         8, 7, 6,
         5, 4, 3,
-        2, 1, 0
+        2, 1, 0,
     };
-
-    geng::Matrix3 result_multiplication_mtx1_mtx2 = {
+    const geng::Matrix3 expected_mtx = {
          9,  6,  3,
         54, 42, 30,
         99, 78, 57
     };
-    expect_matrix(mtx1 * mtx2, result_multiplication_mtx1_mtx2);
 
-    geng::Matrix3 result_multiplication_mtx2_mtx1 = {
-        57, 78, 99,
-        30, 42, 54,
-         3,  6,  9
-    };
-    expect_matrix(mtx2 * mtx1, result_multiplication_mtx2_mtx1);
+    const geng::Matrix3 result_mtx = mtx1 * mtx2;
+
+    test::matrix3::expect_matrix(result_mtx, expected_mtx);
 }
 
 TEST(types_Matrix3, MultiplyVec)
 {
-    geng::Matrix3 mtx = {
+    const geng::Matrix3 mtx = {
         4, 0, 5,
         0, 4, 3,
         0, 0, 1
     };
+    const geng::Vec2 vec = {5, 8};
+    const geng::Vec2 vec_expected = {20 + 5, 32 + 3};
 
-    geng::Vec2 vec = {5, 8};
+    const geng::Vec2 result_vec = mtx * vec;
 
-    geng::Vec2 result_vec = mtx * vec;
-    geng::Vec2 result_vec_expected = {20 + 5, 32 + 3};
-
-    EXPECT_DOUBLE_EQ(result_vec.x, result_vec_expected.x);
-    EXPECT_DOUBLE_EQ(result_vec.y, result_vec_expected.y);
+    EXPECT_DOUBLE_EQ(result_vec.x, vec_expected.x);
+    EXPECT_DOUBLE_EQ(result_vec.y, vec_expected.y);
 }
 
 TEST(types_Matrix3, MultiplyScalar)
 {
-    geng::Matrix3 mtx = {
+    const geng::Matrix3 mtx = {
         0, 1, 2,
         3, 4, 5,
         6, 7, 8
     };
-
-    double scalar = 3;
-
-    geng::Matrix3 result_mtx = {
+    const double scalar = 3;
+    const geng::Matrix3 expected_mtx = {
          0,  3,  6,
          9, 12, 15,
         18, 21, 24
     };
 
-    expect_matrix(mtx * scalar, result_mtx);
+    const geng::Matrix3 result_mtx = mtx * scalar;
+
+    test::matrix3::expect_matrix(result_mtx, expected_mtx);
 }
 
 TEST(types_Matrix3, Addition)
 {
-    geng::Matrix3 mtx1 = geng::Matrix3::Full(5);
-    geng::Matrix3 mtx2 = geng::Matrix3::Full(1);
+    const auto mtx1 = geng::Matrix3::Full(5);
+    const auto mtx2 = geng::Matrix3::Full(1);
+    const auto expected_mtx = geng::Matrix3::Full(6);
 
-    geng::Matrix3 result_mtx = geng::Matrix3::Full(6);
+    const geng::Matrix3 result_mtx = mtx1 + mtx2;
 
-    expect_matrix(mtx1 + mtx2, result_mtx);
+    test::matrix3::expect_matrix(result_mtx, expected_mtx);
 }
 
 TEST(types_Matrix3, Substraction)
 {
-    geng::Matrix3 mtx1 = geng::Matrix3::Full(5);
-    geng::Matrix3 mtx2 = geng::Matrix3::Full(1);
+    const auto mtx1 = geng::Matrix3::Full(5);
+    const auto mtx2 = geng::Matrix3::Full(1);
+    const auto expected_mtx = geng::Matrix3::Full(4);
 
-    geng::Matrix3 result_mtx = geng::Matrix3::Full(4);
+    const geng::Matrix3 result_mtx = mtx1 - mtx2;
 
-    expect_matrix(mtx1 - mtx2, result_mtx);
+    test::matrix3::expect_matrix(result_mtx, expected_mtx);
 }
 
 
 TEST(types_Matrix3, Determinant)
 {
-    geng::Matrix3 mtx = {
+    const geng::Matrix3 mtx = {
         1, 1, 2,
         3, 4, 5,
         6, 7, 8
     };
+    const double expected_det = -3;
 
-    EXPECT_DOUBLE_EQ(mtx.det(), -3);
+    const double result_det = mtx.det();
+
+    EXPECT_DOUBLE_EQ(result_det, expected_det);
 }
