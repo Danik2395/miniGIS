@@ -185,16 +185,11 @@ bool is_point_on_segment(geng::Point p, const geng::Segment& seg)
     }
 
     const geng::Vec2 vec_seg_guiding  = {seg.p0, seg.p1};
-    const geng::Vec2 vec_seg_to_point = {seg.p0, p};
+    const geng::Vec2 vec_seg_start_to_point = {seg.p0, p};
 
-    if (geng::is_zero(vec_seg_to_point))
-    {
-        return seg.p0 == p;
-    }
+    const double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_start_to_point);
 
-    const double proj_coeff_on_guiding = geng::math::proj_coeff(vec_seg_guiding, vec_seg_to_point);
-
-    return proj_coeff_on_guiding >= 0 && proj_coeff_on_guiding <= 1;
+    return geng::is_within(proj_coeff_on_guiding, 0.0, 1.0);
 }
 
 bool is_point_on_segment(geng::Point p, geng::Point seg_p0, geng::Point seg_p1)
