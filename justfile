@@ -20,25 +20,25 @@ debug:     (_debug "debug")
 
 debug-san: (_debug "debug-san")
 
-_test test_command:
+_test test_command: debug
     @ctest --test-dir {{TEST_DIR}} --output-on-failure {{test_command}}
 
-test-all: debug
+test-all:
     @just _test ''
 
-test test_suite: debug
+test test_suite:
     @just _test '-R "^.*_{{test_suite}}\."'
 
-testm test_module: debug
+testm test_module:
     @just _test '-R "^{{test_module}}_"'
 
-testf test_full_name: debug
+testf test_full_name:
     @just _test '-R "^{{test_full_name}}$"'
 
 test-list:
     @ctest --test-dir {{TEST_DIR}} -N
 
-cov mod: debug
+cov mod:
     @rm -rf "{{TEST_DIR}}/coverage" "{{BUILD_DIR}}/coverage" && mkdir -p "{{TEST_DIR}}/coverage"
     @mkdir -p "{{BUILD_DIR}}/coverage"
     @LLVM_PROFILE_FILE="{{TEST_DIR}}/coverage/%p.profraw" just testm '{{mod}}'
