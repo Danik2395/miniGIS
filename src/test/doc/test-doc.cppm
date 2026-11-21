@@ -7,55 +7,55 @@ import gengine.doc;
 import gengine.compare;
 import gengine.types.precision;
 
-TEST(doc_AppState, AddDocDoesNotHandleCurrendDocumentId)
+class doc_AppState : public ::testing::Test
 {
+protected:
     geng::AppState app;
-    entt::registry reg;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-    test::base::add_quantize_precision_to_reg(reg, qprec);
+    static constexpr geng::QuantizePrecision qprec = {1e-7, 1e+7};
+    static constexpr geng::IdDoc unreachable_id_aka_not_valid = 999;
 
+    geng::IdDoc add_test_doc()
+    {
+        entt::registry reg;
+        test::base::add_quantize_precision_to_reg(reg, qprec);
+        return app.add_doc(std::move(reg));
+    }
+
+    void expect_debug_death_on_doc_access(const char* assert_find_regex)
+    {
+        EXPECT_DEBUG_DEATH(app.remove_doc(unreachable_id_aka_not_valid), assert_find_regex);
+        EXPECT_DEBUG_DEATH(app.set_current_doc_id(unreachable_id_aka_not_valid), assert_find_regex);
+        EXPECT_DEBUG_DEATH(std::ignore = app.get_doc(unreachable_id_aka_not_valid), assert_find_regex);
+    }
+};
+
+TEST_F(doc_AppState, AddDocDoesNotHandleCurrendDocumentId)
+{
     const auto id_current_doc_before_doc_add = app.id_current_doc();
-    app.add_doc(std::move(reg));
+
+    add_test_doc();
 
     const auto id_current_doc_after_doc_add = app.id_current_doc();
 
     EXPECT_EQ(id_current_doc_before_doc_add, id_current_doc_after_doc_add);
 }
 
-TEST(doc_AppState, AddDocMonotonicId)
+TEST_F(doc_AppState, AddDocMonotonicId)
 {
-    geng::AppState app;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-
-    entt::registry reg1;
-    test::base::add_quantize_precision_to_reg(reg1, qprec);
-    const auto doc_id1 = app.add_doc(std::move(reg1));
-
-    entt::registry reg2;
-    test::base::add_quantize_precision_to_reg(reg2, qprec);
-    const auto doc_id2 = app.add_doc(std::move(reg2));
+    const auto doc_id1 = add_test_doc();
+    const auto doc_id2 = add_test_doc();
 
     app.clear_all_doc();
 
-    entt::registry reg3;
-    test::base::add_quantize_precision_to_reg(reg3, qprec);
-    const auto doc_id3 = app.add_doc(std::move(reg3));
+    const auto doc_id3 = add_test_doc();
 
     EXPECT_TRUE(doc_id1 != doc_id2 && doc_id1 != doc_id3 && doc_id2 !=doc_id3);
 }
 
-TEST(doc_AppState, RemoveDocOfNonCurrentDocDoesNotAffectCerrntDoc)
+TEST_F(doc_AppState, RemoveDocOfNonCurrentDocDoesNotAffectCerrntDoc)
 {
-    geng::AppState app;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-
-    entt::registry reg1;
-    test::base::add_quantize_precision_to_reg(reg1, qprec);
-    const auto doc_id1 = app.add_doc(std::move(reg1));
-
-    entt::registry reg2;
-    test::base::add_quantize_precision_to_reg(reg2, qprec);
-    const auto doc_id2 = app.add_doc(std::move(reg2));
+    const auto doc_id1 = add_test_doc();
+    const auto doc_id2 = add_test_doc();
 
     app.set_current_doc_id(doc_id1);
 
@@ -66,14 +66,9 @@ TEST(doc_AppState, RemoveDocOfNonCurrentDocDoesNotAffectCerrntDoc)
     EXPECT_EQ(doc_id1, current_doc_id_after_not_current_doc_removal);
 }
 
-TEST(doc_AppState, RemoveDocOfCurrentDocSetCurrentDocToGuardValue)
+TEST_F(doc_AppState, RemoveDocOfCurrentDocSetCurrentDocToGuardValue)
 {
-    geng::AppState app;
-    entt::registry reg;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-    test::base::add_quantize_precision_to_reg(reg, qprec);
-
-    const auto id_test_doc = app.add_doc(std::move(reg));
+    const auto id_test_doc = add_test_doc();
 
     app.set_current_doc_id(id_test_doc);
 
@@ -84,59 +79,34 @@ TEST(doc_AppState, RemoveDocOfCurrentDocSetCurrentDocToGuardValue)
     EXPECT_FALSE(id_test_doc == current_doc_id_after_current_doc_removal);
 }
 
-TEST(doc_AppState, AfterWorkAppNoAnyDocumentAssert)
+TEST_F(doc_AppState, AfterWorkAppNoAnyDocumentAssert)
 {
-    geng::AppState app;
-    const geng::IdDoc id = 5;
-    entt::registry reg;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-    test::base::add_quantize_precision_to_reg(reg, qprec);
-
-    const auto id_test_doc = app.add_doc(std::move(reg));
+    const auto id_test_doc = add_test_doc();
     app.set_current_doc_id(id_test_doc);
     app.remove_doc(id_test_doc);
 
-    EXPECT_DEBUG_DEATH(app.remove_doc(id), "No any doc");
-    EXPECT_DEBUG_DEATH(app.set_current_doc_id(id), "No any doc");
-    EXPECT_DEBUG_DEATH(std::ignore = app.get_doc(id), "No any doc");
+    expect_debug_death_on_doc_access("No any doc");
 }
 
-TEST(doc_AppState, EmptyAppNoAnyDocumentAssert)
+TEST_F(doc_AppState, EmptyAppNoAnyDocumentAssert)
 {
-    geng::AppState app;
-    const geng::IdDoc id = 5;
-
-    EXPECT_DEBUG_DEATH(app.remove_doc(id), "No any doc");
-    EXPECT_DEBUG_DEATH(app.set_current_doc_id(id), "No any doc");
-    EXPECT_DEBUG_DEATH(std::ignore = app.get_doc(id), "No any doc");
+    expect_debug_death_on_doc_access("No any doc");
 }
 
-TEST(doc_AppState, NoSuchDocumentAssert)
+TEST_F(doc_AppState, NoSuchDocumentAssert)
 {
-    geng::AppState app;
-    const geng::IdDoc id = 5;
-    entt::registry reg;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-    test::base::add_quantize_precision_to_reg(reg, qprec);
-
-    const auto id_test_doc = app.add_doc(std::move(reg));
+    const auto id_test_doc = add_test_doc();
     app.set_current_doc_id(id_test_doc);
 
-    EXPECT_DEBUG_DEATH(app.remove_doc(id), "No such doc");
-    EXPECT_DEBUG_DEATH(app.set_current_doc_id(id), "No such doc");
-    EXPECT_DEBUG_DEATH(std::ignore = app.get_doc(id), "No such doc");
+    expect_debug_death_on_doc_access("No such doc");
 }
 
-TEST(doc_AppState, DocObjectChangeQuantizePrecitionFromPassedRegistry)
+TEST_F(doc_AppState, DocObjectChangeQuantizePrecitionFromPassedRegistry)
 {
-    geng::AppState app;
-    entt::registry reg;
     const double v1 = 5.98765432187;
     const double v2 = 5.98765431435;
-    const geng::QuantizePrecision qprec = {1e-7, 1e+7};
-    test::base::add_quantize_precision_to_reg(reg, qprec);
 
-    const auto id_test_doc = app.add_doc(std::move(reg));
+    const auto id_test_doc = add_test_doc();
     const bool values_equality_on_default_precision_after_doc_added = geng::is_equal(v1, v2);
     EXPECT_FALSE(values_equality_on_default_precision_after_doc_added);
 
