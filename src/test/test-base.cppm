@@ -5,6 +5,13 @@ export module geotest:base;
 import gengine.doc;
 import gengine.types.precision;
 
+namespace test::base
+{
+void add_quantize_precision_to_reg(entt::registry& reg, const geng::QuantizePrecision qprec)
+{
+    reg.ctx().emplace<geng::QuantizePrecision>(qprec);
+}
+
 class GeoTestBase : public ::testing::Test
 {
 protected:
@@ -28,13 +35,9 @@ private:
     {
         auto registry = entt::registry();
 
-        add_quantize_precision_to_reg(registry);
+        add_quantize_precision_to_reg(registry, {1e-7, 1e+7});
 
         return registry;
     }
-
-    void add_quantize_precision_to_reg(entt::registry& reg)
-    {
-        reg.ctx().emplace<geng::QuantizePrecision>(1e-9, 1e+9);
-    }
 };
+} // namespace test::base
