@@ -11,7 +11,6 @@ if(BUILD_TESTS)
     add_executable(miniGIS_tests)
 
     target_sources(miniGIS_tests PRIVATE FILE_SET CXX_MODULES FILES
-        src/test/test.cppm
         src/test/test-base.cppm
         src/test/test-table.cppm
         src/test/math/test-math_area.cppm
