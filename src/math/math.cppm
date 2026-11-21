@@ -227,16 +227,16 @@ geng::math::SegmentsIntersection intersection(const geng::Segment& seg1, const g
 
     if (!geng::is_equal(cross_seg1_seg2, 0))
     {
-        const double cross_begins_seg1 = geng::math::cross(vec_begin1_begin2, vec_seg1);
-        const double cross_begins_seg2 = geng::math::cross(vec_begin1_begin2, vec_seg2);
+        const double cross_begins_with_seg1 = geng::math::cross(vec_begin1_begin2, vec_seg1);
+        const double cross_begins_with_seg2 = geng::math::cross(vec_begin1_begin2, vec_seg2);
 
         // M(t), N(u) - are points of intersection on seg1 and seg2
         // M(t) = N(u)
         // x1 + t * p_x = x3 + u * q_x
         // y1 + t * p_y = y3 + u * q_y
-        // Solve system to get t and u
-        const double coeff_seg1 = cross_begins_seg2 / cross_seg1_seg2;
-        const double coeff_seg2 = cross_begins_seg1 / cross_seg1_seg2;
+        // Solve system to get t and u, that represents two variables below
+        const double coeff_seg1 = cross_begins_with_seg2 / cross_seg1_seg2;
+        const double coeff_seg2 = cross_begins_with_seg1 / cross_seg1_seg2;
 
         if (!geng::is_within(coeff_seg1, 0.0, 1.0) ||
             !geng::is_within(coeff_seg2, 0.0, 1.0))
