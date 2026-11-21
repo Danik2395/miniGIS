@@ -7,7 +7,7 @@
 namespace geng
 {
 struct RenderUnit;
-} // namespace
+} // namespace geng
 
 class GCanvas : public QWidget
 {

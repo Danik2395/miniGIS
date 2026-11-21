@@ -75,6 +75,8 @@ public:
 
     void remove_doc(geng::IdDoc id)
     {
+        check_document_valid(id);
+
         documents_registers.erase(id);
 
         if (id == current_doc_id)
@@ -103,7 +105,7 @@ public:
         return current_doc_id;
     }
 
-    geng::Doc current_doc()
+    geng::Doc get_current_doc()
     {
         return get_doc(current_doc_id);
     }

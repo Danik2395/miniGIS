@@ -40,7 +40,7 @@ void GAppWindow::open_file(const std::filesystem::path& path)
 
 void GAppWindow::update_canvas()
 {
-    auto doc = app_state->current_doc();
+    auto doc = app_state->get_current_doc();
 
     auto render_sequence = geng::render::query_draw_sequence(doc);
 
