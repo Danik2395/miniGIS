@@ -1,83 +1,111 @@
 module;
+#include <vector>
 #include <gtest/gtest.h>
 export module geotest:math_distance;
+import :table;
 import gengine.types;
 import gengine.math;
 
-TEST(math_Distance, PointToSegmentPointHasProjectionOnSegment)
+TEST(math_Distance, Euclidean)
 {
-    geng::Point target_p = {7.7, 15.8};
-    geng::Point line_p0  = {5, 5};
-    geng::Point line_p1  = {10, 5};
+    const geng::Point p1(6.2, 14.3);
+    const geng::Point p2(3.2, 18.3);
+    const double expected_distance = 5.0;
 
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(target_p, line_p0, line_p1),
-            10.8
-            );
+    const double result_distance = geng::math::distance_euclidean(p1, p2);
 
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(target_p, line_p1, line_p0),
-            10.8
-            );
+    EXPECT_DOUBLE_EQ(result_distance, expected_distance);
 }
 
-TEST(math_Distance, PointToSegmentPointOutOfProjection)
+TEST(math_Distance, PointToSegmentFuncOverloadsEqual)
 {
-    geng::Point target_p = {15.8, 5};
-    geng::Point line_p0  = {5, 5};
-    geng::Point line_p1  = {10, 5};
+    const geng::Point p = {7.7, 15.8};
+    const geng::Point seg_p0  = {5, 5};
+    const geng::Point seg_p1  = {10, 5};
+    const geng::Segment seg(seg_p0, seg_p1);
 
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(target_p, line_p1, line_p0),
-            5.8
-            );
+    const double distance_point_points = geng::math::distance(p, seg_p0, seg_p1);
+    const double distance_point_seg = geng::math::distance(p, seg);
 
-    target_p = {-5, 5};
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(target_p, line_p1, line_p0),
-            10
-            );
-}
-
-TEST(math_Distance, PointToVerticalSegment)
-{
-    geng::Point target_p = {0, 15.8};
-    geng::Point line_p0  = {0, 1};
-    geng::Point line_p1  = {0, 10};
-
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(target_p, line_p0, line_p1),
-            5.8
-            );
+    EXPECT_DOUBLE_EQ(distance_point_points, distance_point_seg);
 }
 
 TEST(math_Distance, PointToDegeneratedSegment)
 {
-    geng::Point target_p = {3.4, 2};
-    geng::Point line_p0  = {4.9, 15.8};
-    geng::Point line_p1  = {4.9, 15.8};
+    const geng::Point p = {3.2, 2};
+    const geng::Point seg_p0  = {4.0, 15.0};
+    const geng::Point seg_p1  = {4.0, 15.0};
+    const double expected_distance = geng::math::distance_euclidean(p, seg_p0);
 
-    EXPECT_NEAR(
-            geng::math::distance(target_p, line_p0, line_p1),
-            13.8812823615,
-            1e-10
-            );
+    const double result_distance = geng::math::distance(p, seg_p0, seg_p1);
+
+    EXPECT_DOUBLE_EQ(result_distance, expected_distance);
 }
 
-TEST(math_Distance, PointOnSegment)
+namespace test::distance
 {
-    geng::Point line_p0  = {5, 4};
-    geng::Point line_p1  = {1, 0};
+struct [[nodiscard]] DistanceArrange
+{
+    const char* name;
+    geng::Point p;
+    geng::Point seg_p0;
+    geng::Point seg_p1;
+    double expected_distance;
+};
+} // namespace test::distance
 
-    geng::Point p1 = {3, 2};
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(p1, line_p0, line_p1),
-            0
-            );
+TEST(math_Distance, ValidCases)
+{
+    using test::distance::DistanceArrange;
 
-    geng::Point p2 = {5, 4};
-    EXPECT_DOUBLE_EQ(
-            geng::math::distance(p2, line_p0, line_p1),
-            0
-            );
+    const std::vector<DistanceArrange> distance_table = {
+        {
+            .name = "PointToSegmentPointHasProjectionOnSegment",
+            .p = {7.7, 15.8},
+            .seg_p0 = {5.0, 5.0},
+            .seg_p1 = {10.0, 5.0},
+            .expected_distance = 10.8,
+        },
+        {
+            .name = "PointToSegmentPointOutOfProjectionToRight",
+            .p = {15.8, 5.0},
+            .seg_p0 = {5.0, 5.0},
+            .seg_p1 = {10.0, 5.0},
+            .expected_distance = 5.8,
+        },
+        {
+            .name = "PointToSegmentPointOutOfProjectionToLeft",
+            .p = {-5.0, 5.0},
+            .seg_p0 = {5.0, 5.0},
+            .seg_p1 = {10.0, 5.0},
+            .expected_distance = 10.0,
+        },
+        {
+            .name = "PointToVerticalSegment",
+            .p = {0.0, 15.8},
+            .seg_p0 = {0.0, 1.0},
+            .seg_p1 = {0.0, 10.0},
+            .expected_distance = 5.8,
+        },
+        {
+            .name = "PointToSegmentPointOnTheSegment",
+            .p = {3.0, 2.0},
+            .seg_p0 = {5.0, 4.0},
+            .seg_p1 = {1.0, 0.0},
+            .expected_distance = 0.0,
+        },
+        {
+            .name = "PointToSegmentPointOnTheEndOfSegment",
+            .p = {5.0, 4.0},
+            .seg_p0 = {5.0, 4.0},
+            .seg_p1 = {1.0, 0.0},
+            .expected_distance = 0.0,
+        },
+    };
+
+    test::table::run_test_table(distance_table, [](const DistanceArrange& c){
+            const double result_distance = geng::math::distance(c.p, c.seg_p0, c.seg_p1);
+
+            EXPECT_DOUBLE_EQ(result_distance, c.expected_distance);
+            });
 }

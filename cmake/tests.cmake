@@ -19,7 +19,7 @@ if(BUILD_TESTS)
         src/test/math/test-math_intersection.cppm
         src/test/math/test-math_orientation.cppm
         src/test/math/test-math_predicates.cppm
-        src/test/math/test-math_relations.cppm
+        src/test/math/test-math_vectorops.cppm
         src/test/types/test-types_matrix3.cppm
         src/test/types/test-types_point.cppm
         src/test/types/test-types_vec2.cppm
