@@ -101,6 +101,20 @@ TEST_F(doc_AppState, NoSuchDocumentAssert)
     expect_debug_death_on_doc_access("No such doc");
 }
 
+TEST_F(doc_AppState, DocumentsOwnTheirRegistries)
+{
+    const auto doc_id1 = add_test_doc();
+    const auto doc_id2 = add_test_doc();
+    const auto doc1 = app.get_doc(doc_id1);
+    const auto doc2 = app.get_doc(doc_id2);
+
+    const bool doc1_registries_equality = &doc1.reg() == &app.get_doc(doc_id1).reg();
+    const bool doc1_registry_and_doc2_registry_equality = &doc1.reg() == &doc2.reg();
+
+    EXPECT_TRUE(doc1_registries_equality);
+    EXPECT_FALSE(doc1_registry_and_doc2_registry_equality);
+}
+
 TEST_F(doc_AppState, DocObjectChangeQuantizePrecitionFromPassedRegistry)
 {
     const double v1 = 5.98765432187;
