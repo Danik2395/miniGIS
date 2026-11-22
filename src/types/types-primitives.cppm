@@ -11,6 +11,7 @@ module;
 #include <array>
 #include <concepts>
 #include <cstddef>
+#include <tuple>
 export module gengine.types.primitives;
 import gengine.compare.doubles;
 
@@ -258,10 +259,14 @@ public:
 
     geng::Vec2 operator*(const geng::Vec2& vec) const
     {
-        return {
-            (*this)[0, 0] * vec.x + (*this)[0, 1] * vec.y + (*this)[0, 2],
-            (*this)[1, 0] * vec.x + (*this)[1, 1] * vec.y + (*this)[1, 2]
-        };
+        const auto [x, y] = scale_two_points(vec.x, vec.y);
+        return {x, y};
+    }
+
+    geng::Point operator*(const geng::Point& p) const
+    {
+        const auto [x, y] = scale_two_points(p.x, p.y);
+        return {x, y};
     }
 
     Matrix3 operator*(double scalar)            const { return zip_with_oper(scalar, std::multiplies{}); }
@@ -278,6 +283,14 @@ public:
     }
 
 private:
+    std::tuple<double, double> scale_two_points(double x, double y) const
+    {
+        return {
+            (*this)[0, 0] * x + (*this)[0, 1] * y + (*this)[0, 2],
+            (*this)[1, 0] * x + (*this)[1, 1] * y + (*this)[1, 2]
+        };
+    }
+
     Matrix3 zip_with_oper(const Matrix3& other_mtx, geng::ZipMatrixOper auto oper) const
     {
         Matrix3 result_mtx;

@@ -165,6 +165,21 @@ TEST(types_Matrix3, MultiplyVec)
     EXPECT_DOUBLE_EQ(result_vec.y, vec_expected.y);
 }
 
+TEST(types_Matrix3, MultiplyPoint)
+{
+    const geng::Matrix3 mtx = {
+        4, 0, 5,
+        0, 4, 3,
+        0, 0, 1
+    };
+    const geng::Point point = {5, 8};
+    const geng::Point point_expected = {20 + 5, 32 + 3};
+
+    const geng::Point result_point = mtx * point;
+
+    EXPECT_EQ(point_expected, result_point);
+}
+
 TEST(types_Matrix3, MultiplyScalar)
 {
     const geng::Matrix3 mtx = {
