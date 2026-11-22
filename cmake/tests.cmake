@@ -26,6 +26,7 @@ if(BUILD_TESTS)
         src/test/types/test-types_render.cppm
         src/test/compare/test-compare.cppm
         src/test/doc/test-doc.cppm
+        src/test/camera/test-camera.cppm
     )
 
     target_precompile_headers(miniGIS_tests PRIVATE

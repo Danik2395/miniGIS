@@ -3,7 +3,8 @@ module;
 #include <entt/entt.hpp>
 export module geotest:base;
 import gengine.doc;
-import gengine.types.precision;
+import gengine.types;
+import gengine.camera;
 
 namespace test::base
 {
@@ -36,6 +37,10 @@ private:
         auto registry = entt::registry();
 
         add_quantize_precision_to_reg(registry, {1e-7, 1e+7});
+
+        registry.ctx().emplace<geng::Camera>();
+
+        registry.ctx().emplace<geng::Viewport>();
 
         return registry;
     }
