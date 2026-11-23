@@ -3,6 +3,7 @@ module;
 #include <cmath>
 #include <functional>
 #include <initializer_list>
+#include <utility>
 #include <vector>
 #include <compare>
 #include <variant>
@@ -171,7 +172,7 @@ private:
         {
             m.fill(val);
         }
-        else { assert(false && "Matrix3: non valid init_type."); }
+        else { std::unreachable(); }
     }
 
 public:
