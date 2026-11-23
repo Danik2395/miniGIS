@@ -22,6 +22,7 @@ target_sources(miniGIS_core PUBLIC FILE_SET CXX_MODULES FILES
     src/render/render.cppm
     src/serialization/serialization.cppm
     src/camera/camera.cppm
+    src/visit/visit.cppm
 )
 
 target_link_libraries(miniGIS_core PUBLIC EnTT::EnTT)
