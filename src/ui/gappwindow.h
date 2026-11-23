@@ -7,7 +7,7 @@
 namespace geng
 {
 class AppState;
-}
+} // namespace geng
 
 namespace Ui
 {
@@ -20,7 +20,7 @@ class GAppWindow : public QMainWindow
 
 private:
     Ui::GAppWindow* ui = nullptr;
-    std::unique_ptr<geng::AppState> app_state;
+    std::unique_ptr<geng::AppState> app;
 
 public:
     explicit GAppWindow(QMainWindow* parent = nullptr);
@@ -30,4 +30,7 @@ public:
     void update_canvas();
 
     ~GAppWindow() override;
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 };

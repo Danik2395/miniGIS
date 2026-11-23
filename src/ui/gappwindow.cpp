@@ -12,9 +12,11 @@ import gengine.serialization;
 GAppWindow::GAppWindow(QMainWindow* parent)
     : QMainWindow(parent)
     , ui(new Ui::GAppWindow)
-    , app_state(std::make_unique<geng::AppState>())
+    , app(std::make_unique<geng::AppState>())
 {
     ui->setupUi(this);
+
+    ui->canvas->installEventFilter(this);
 
     // on_open_file()
     // {
@@ -50,4 +52,15 @@ void GAppWindow::update_canvas()
 GAppWindow::~GAppWindow()
 {
     delete ui;
+}
+
+bool GAppWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if (app->id_current_doc() != geng::docIdGuard && watched == ui->canvas && event->type() == QEvent::Resize)
+    {
+        auto doc = app->get_current_doc();
+        geng::camera::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
+    }
+
+    return QWidget::eventFilter(watched, event);
 }
