@@ -84,12 +84,24 @@ struct Segment
 struct LineString
 {
     std::vector<geng::Point> points;
+
+    [[nodiscard]]
+    bool operator==(const LineString& other_line) const
+    {
+        return points == other_line.points;
+    }
 };
 
 struct Polygon
 {
     std::vector<geng::Point> outer;
     std::vector<std::vector<geng::Point>> inner;
+
+    [[nodiscard]]
+    bool operator==(const Polygon& other_poly) const
+    {
+        return outer == other_poly.outer && inner == other_poly.inner;
+    }
 };
 
 struct Vec2
