@@ -4,14 +4,13 @@ module;
 #include <ranges>
 #include <entt/entt.hpp>
 export module gengine.serialization;
-import gengine.types.precision;
-import gengine.types.primitives;
-import gengine.types.render;
+import gengine.types;
+import gengine.camera;
 
 export namespace geng::serial
 {
 entt::registry reg_from_file(const std::filesystem::path& path);
-} // namespace geng
+} // namespace geng::serial
 
 
 
@@ -153,6 +152,15 @@ void create_test_objects(entt::registry& reg)
 
 namespace geng::serial
 {
+void emplace_context_variables(entt::registry& reg)
+{
+    reg.ctx().emplace<geng::QuantizePrecision>(1e-9, 1e+9);
+
+    reg.ctx().emplace<geng::Camera>();
+
+    reg.ctx().emplace<geng::Viewport>();
+}
+
 entt::registry reg_from_file(const std::filesystem::path& path)
 {
     // п.55
@@ -163,10 +171,10 @@ entt::registry reg_from_file(const std::filesystem::path& path)
 
     entt::registry registry;
 
-    registry.ctx().emplace<geng::QuantizePrecision>(1e-9, 1e+9);
+    geng::serial::emplace_context_variables(registry);
 
     hardcode::create_test_objects(registry);
 
     return registry;
 }
-} // namespace geng
+} // namespace geng::serial
