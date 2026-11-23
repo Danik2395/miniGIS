@@ -12,6 +12,8 @@ export namespace geng
 {
 using IdDoc = uint32_t;
 
+constexpr geng::IdDoc docIdGuard = 0;
+
 class [[nodiscard]] Doc;
 
 class [[nodiscard]] AppState;
@@ -55,8 +57,8 @@ class AppState
 {
     std::map<geng::IdDoc, entt::registry> documents_registers;
 
-    geng::IdDoc current_doc_id  = 0;
-    geng::IdDoc last_add_doc_id = 0;
+    geng::IdDoc current_doc_id  = docIdGuard;
+    geng::IdDoc last_add_doc_id = docIdGuard;
 
 public:
     AppState() = default;
@@ -127,7 +129,7 @@ private:
 
     void set_current_doc_guard()
     {
-        current_doc_id = 0;
+        current_doc_id = docIdGuard;
     }
 };
 } // namespace geng
