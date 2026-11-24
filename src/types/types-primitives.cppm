@@ -235,16 +235,10 @@ public:
         assert(vec_sequense.size() <= 3 && "Matrix3: too many arguments in initializion list.");
     }
 
-    [[nodiscard]] const double& operator[](size_t i, size_t j) const { return m[i * 3 + j]; }
-    [[nodiscard]] double& operator[](size_t i, size_t j)
-    {
-        return const_cast<double&>(static_cast<const geng::Matrix3*>(this)->operator[](i, j));
-    }
+    [[nodiscard]] auto& operator[](this auto&& self, size_t i, size_t j) { return self.m[i * 3 + j]; }
 
-    [[nodiscard]] auto begin() const { return m.begin(); }
-    [[nodiscard]] auto end()   const { return m.end(); }
-    [[nodiscard]] auto begin()       { return m.begin(); }
-    [[nodiscard]] auto end()         { return m.end(); }
+    [[nodiscard]] auto begin(this auto&& self) { return self.m.begin(); }
+    [[nodiscard]] auto end(this auto&& self)   { return self.m.end(); }
 
     [[nodiscard]] auto size() const { return m.size(); }
 
