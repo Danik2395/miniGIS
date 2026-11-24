@@ -44,7 +44,7 @@ public:
 
     entt::registry& reg()
     {
-        return const_cast<entt::registry&>(static_cast<const geng::Doc*>(this)->reg());
+        return const_cast<entt::registry&>(std::as_const(*this).reg());
     }
 
     const entt::registry& reg() const
