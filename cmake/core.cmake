@@ -14,6 +14,7 @@ target_sources(miniGIS_core PUBLIC FILE_SET CXX_MODULES FILES
     src/types/types-precision.cppm
     src/types/types-render.cppm
     src/types/types-camera.cppm
+    src/types/types-input.cppm
     src/math/math.cppm
     src/compare/compare.cppm
     src/compare/compare-doubles.cppm
