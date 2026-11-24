@@ -8,7 +8,7 @@
 import gengine.looprunner;
 import gengine.types.precision;
 import gengine.serialization;
-import gengine.camera;
+import gengine.input;
 import gengine.doc;
 
 GAppWindow::GAppWindow(QMainWindow* parent)
@@ -61,7 +61,7 @@ bool GAppWindow::eventFilter(QObject* watched, QEvent* event)
     if (app->id_current_doc() != geng::docIdGuard && watched == ui->canvas && event->type() == QEvent::Resize)
     {
         auto doc = app->get_current_doc();
-        geng::camera::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
+        geng::input::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
         update_canvas();
     }
 
