@@ -5,6 +5,7 @@ import :table;
 import :base;
 import gengine.types;
 import gengine.camera;
+import gengine.input;
 
 class camera_Camera : public test::base::GeoTestBase {};
 
@@ -12,16 +13,14 @@ TEST_F(camera_Camera, ThroughTestOfWorldToScreen)
 {
     auto doc = app.get_current_doc();
 
-    const geng::Matrix3 imitate_pan_mtx = {
-        1,  0, -200,
-        0,  1, -200,
-        0,  0,  1,
-    };
-    doc.reg().ctx().get<geng::Camera>().mtx = imitate_pan_mtx;
+    const double imitate_pan_offset_x = 200;
+    const double imitate_pan_offset_y = 200;
+    doc.reg().ctx().get<geng::Camera>().offset_x = imitate_pan_offset_x;
+    doc.reg().ctx().get<geng::Camera>().offset_y = imitate_pan_offset_y;
 
     const double vh = 500;
     const double vw = 500;
-    geng::camera::update_viewport(doc, vh, vw);
+    geng::input::update_viewport(doc, vh, vw);
 
     const geng::Matrix3 transform_mtx = geng::camera::get_transform_matrix(doc);
     const geng::Point world_point = {250.0, 210.0};
