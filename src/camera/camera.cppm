@@ -30,11 +30,4 @@ geng::Matrix3 get_transform_matrix(const geng::Doc& doc)
 
     return viewport_matrix * translation_matrix;
 }
-
-void update_viewport(geng::Doc& doc, double vh, [[maybe_unused]] double vw)
-{
-    auto& viewport_matrix = doc.reg().ctx().get<geng::Viewport>().mtx;
-
-    viewport_matrix[1, 2] = vh;
-}
 } // namespace geng::camera
