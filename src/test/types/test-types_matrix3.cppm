@@ -235,3 +235,79 @@ TEST(types_Matrix3, Determinant)
 
     EXPECT_DOUBLE_EQ(result_det, expected_det);
 }
+
+TEST(types_Matrix3, Minor)
+{
+    const geng::Matrix3 mtx = {
+        1, 1, 2,
+        3, 4, 5,
+        6, 7, 8
+    };
+
+    const double expected_minor00 = -3.0;
+    const double expected_minor01 = -6.0;
+    const double expected_minor02 = -3.0;
+    const double expected_minor10 = -6.0;
+    const double expected_minor11 = -4.0;
+    const double expected_minor12 = 1.0;
+    const double expected_minor20 = -3.0;
+    const double expected_minor21 = -1.0;
+    const double expected_minor22 = 1.0;
+
+    const double result_minor00 = mtx.minor(0, 0);
+    const double result_minor01 = mtx.minor(0, 1);
+    const double result_minor02 = mtx.minor(0, 2);
+    const double result_minor10 = mtx.minor(1, 0);
+    const double result_minor11 = mtx.minor(1, 1);
+    const double result_minor12 = mtx.minor(1, 2);
+    const double result_minor20 = mtx.minor(2, 0);
+    const double result_minor21 = mtx.minor(2, 1);
+    const double result_minor22 = mtx.minor(2, 2);
+
+    EXPECT_DOUBLE_EQ(result_minor00, expected_minor00);
+    EXPECT_DOUBLE_EQ(result_minor01, expected_minor01);
+    EXPECT_DOUBLE_EQ(result_minor02, expected_minor02);
+    EXPECT_DOUBLE_EQ(result_minor10, expected_minor10);
+    EXPECT_DOUBLE_EQ(result_minor11, expected_minor11);
+    EXPECT_DOUBLE_EQ(result_minor12, expected_minor12);
+    EXPECT_DOUBLE_EQ(result_minor20, expected_minor20);
+    EXPECT_DOUBLE_EQ(result_minor21, expected_minor21);
+    EXPECT_DOUBLE_EQ(result_minor22, expected_minor22);
+}
+
+TEST(types_Matrix3, Transpose)
+{
+    const geng::Matrix3 mtx = {
+        1, 1, 2,
+        3, 4, 5,
+        6, 7, 8
+    };
+    const geng::Matrix3 expected_transposed = {
+        1, 3, 6,
+        1, 4, 7,
+        2, 5, 8,
+    };
+
+    const geng::Matrix3 result_transposed = mtx.transposed();
+
+    test::matrix3::expect_matrix(result_transposed, expected_transposed);
+}
+
+
+TEST(types_Matrix3, Inverse)
+{
+    const geng::Matrix3 mtx = {
+        1, 1, 2,
+        3, 4, 5,
+        6, 7, 8
+    };
+    const geng::Matrix3 expected_inverse = {
+         1.0, -2.0,      1.0,
+        -2.0,  4.0/3.0, -1.0/3,
+         1.0,  1.0/3.0, -1.0/3,
+    };
+
+    const geng::Matrix3 result_inverse = mtx.inverse();
+
+    test::matrix3::expect_matrix(result_inverse, expected_inverse);
+}
