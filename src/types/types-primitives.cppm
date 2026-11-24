@@ -187,6 +187,14 @@ private:
         else { std::unreachable(); }
     }
 
+    [[nodiscard]]
+    auto two_indexes_view() const
+    {
+        auto line_view = std::views::iota(size_t(0), size_t(3));
+        auto view_two_indexes = std::views::cartesian_product(line_view, line_view);
+        return view_two_indexes;
+    }
+
 public:
 
     std::array<double, 9> m{};
@@ -246,16 +254,14 @@ public:
     Matrix3 operator*(const Matrix3& other_mtx) const
     {
         auto get_multiplied_elem = [&other_mtx, this](const auto& indexes) {
-            auto [i, j] = indexes;
+            const auto [i, j] = indexes;
 
             return (*this)[i, 0] * other_mtx[0, j] +
                    (*this)[i, 1] * other_mtx[1, j] +
                    (*this)[i, 2] * other_mtx[2, j];
         };
 
-        auto line_view = std::views::iota(size_t(0), size_t(3));
-        auto view_two_indexes = std::views::cartesian_product(line_view, line_view);
-        auto multiplied_elements = view_two_indexes | std::views::transform(get_multiplied_elem);
+        auto multiplied_elements = two_indexes_view() | std::views::transform(get_multiplied_elem);
 
         Matrix3 multiplication_mtx{};
 
@@ -284,9 +290,38 @@ public:
     double det() const
     {
         // On the third row
-        return m[6] * (m[1] * m[5] - m[2] * m[4])
-             - m[7] * (m[0] * m[5] - m[2] * m[3])
-             + m[8] * (m[0] * m[4] - m[1] * m[3]);
+        return m[6] * minor(2, 0) - m[7] * minor(2, 1) + m[8] * minor(2, 2);
+    }
+
+    [[nodiscard]]
+    double minor(size_t i, size_t j) const
+    {
+        const size_t r0 = (i == 0) ? 1 : 0;
+        const size_t r1 = (i == 2) ? 1 : 2;
+        const size_t c0 = (j == 0) ? 1 : 0;
+        const size_t c1 = (j == 2) ? 1 : 2;
+
+        return (*this)[r0, c0] * (*this)[r1, c1] - (*this)[r0, c1] * (*this)[r1, c0];
+    }
+
+    Matrix3 transposed() const
+    {
+        return {
+            m[0], m[3], m[6],
+            m[1], m[4], m[7],
+            m[2], m[5], m[8],
+        };
+    }
+
+    Matrix3 inverse() const
+    {
+        Matrix3 minor_mtx = {
+            minor(0, 0), -minor(0, 1), minor(0, 2),
+            -minor(1, 0), minor(1, 1), -minor(1, 2),
+            minor(2, 0), -minor(2, 1), minor(2, 2),
+        };
+
+        return minor_mtx.transposed() * (1 / (*this).det());
     }
 
 private:
