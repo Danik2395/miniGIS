@@ -12,6 +12,7 @@ namespace geng
 {
 struct Camera
 {
-    geng::Matrix3 mtx = geng::Matrix3::Diagonal(1);
+    double x_offset = 0;
+    double y_offset = 0;
 };
 } // namespace geng
