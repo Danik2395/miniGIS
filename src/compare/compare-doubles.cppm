@@ -50,9 +50,9 @@ bool is_within(double val, double min, double max)
 {
     const auto [actual_min, actual_max] = std::minmax(min, max);
 
-    auto qval = geng::quantize(val);
-    auto qmin = geng::quantize(actual_min);
-    auto qmax = geng::quantize(actual_max);
+    const auto qval = geng::quantize(val);
+    const auto qmin = geng::quantize(actual_min);
+    const auto qmax = geng::quantize(actual_max);
 
     return qmin <= qval && qval <= qmax;
 }
