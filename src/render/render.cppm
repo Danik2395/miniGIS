@@ -10,7 +10,7 @@ export namespace geng::render
 {
 [[nodiscard]]
 std::vector<geng::RenderUnit> query_draw_sequence(const geng::Doc& doc);
-} // namespace geng
+} // namespace geng::render
 
 
 
@@ -43,4 +43,4 @@ std::vector<geng::RenderUnit> query_draw_sequence(const geng::Doc& doc)
 
     return draw_sequence;
 }
-} // namespace geng
+} // namespace geng::render
