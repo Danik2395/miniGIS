@@ -1,12 +1,14 @@
 #pragma once
 #include <QMainWindow>
 #include <QObject>
+#include <QKeyEvent>
 #include <memory>
 #include <filesystem>
 
 namespace geng
 {
 class AppState;
+class Doc;
 } // namespace geng
 
 namespace Ui
@@ -32,5 +34,8 @@ public:
     ~GAppWindow() override;
 
 protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
+
+private:
+    bool action_on_filtered_event(geng::Doc& doc, QEvent* event);
 };

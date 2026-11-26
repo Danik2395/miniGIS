@@ -9,6 +9,10 @@ target_sources(miniGIS PRIVATE
     src/ui/gcanvas.cpp
 )
 
+target_sources(miniGIS PRIVATE FILE_SET CXX_MODULES FILES
+    src/ui/ui-inputhandle.cppm
+)
+
 target_link_libraries(miniGIS PRIVATE
     miniGIS_core
     miniGIS_options

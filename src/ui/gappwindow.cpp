@@ -1,10 +1,13 @@
 #include <QMainWindow>
+#include <QEvent>
+#include <QKeyEvent>
 #include <new>
 #include <memory>
 #include <filesystem>
 #include "gappwindow.h"
 #include "entt/entt.hpp"
 #include "ui_gappwindow.h"
+import ui.inputhandle;
 import gengine.looprunner;
 import gengine.types.precision;
 import gengine.serialization;
@@ -19,6 +22,7 @@ GAppWindow::GAppWindow(QMainWindow* parent)
     ui->setupUi(this);
 
     ui->canvas->installEventFilter(this);
+    ui->canvas->setFocusPolicy(Qt::StrongFocus);
 
     // on_open_file()
     // {
@@ -58,12 +62,40 @@ GAppWindow::~GAppWindow()
 
 bool GAppWindow::eventFilter(QObject* watched, QEvent* event)
 {
-    if (app->id_current_doc() != geng::docIdGuard && watched == ui->canvas && event->type() == QEvent::Resize)
+    if (app->id_current_doc() == geng::docIdGuard || watched != ui->canvas)
     {
-        auto doc = app->get_current_doc();
-        geng::input::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
+        return QWidget::eventFilter(watched, event);
+    }
+
+    auto doc = app->get_current_doc();
+
+    bool action_occurred = action_on_filtered_event(doc, event);
+
+    if (action_occurred)
+    {
         update_canvas();
     }
 
-    return QWidget::eventFilter(watched, event);
+    return action_occurred || QWidget::eventFilter(watched, event);
+}
+
+bool GAppWindow::action_on_filtered_event(geng::Doc& doc, QEvent* event)
+{
+    bool action_occurred = false;
+
+    switch (event->type())
+    {
+        case QEvent::Resize:
+            geng::input::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
+            break;
+
+        case QEvent::KeyPress:
+            action_occurred = ui::inputhandle::handle_keypress(doc, static_cast<QKeyEvent*>(event));
+            break;
+
+        default:
+            break;
+    }
+
+    return action_occurred;
 }
