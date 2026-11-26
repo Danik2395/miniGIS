@@ -16,8 +16,8 @@ namespace geng
 {
 struct Viewport
 {
-    double height;
-    double width;
+    double height = 0;
+    double width = 0;
     // geng::Box box;
 };
 
