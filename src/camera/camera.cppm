@@ -49,7 +49,7 @@ geng::Point screen_to_world(const geng::Matrix3& mtx, geng::Point p)
     return mtx.inverse() * p;
 }
 
-geng::Matrix3 create_viewport_coordinates_normalization_matrix(const geng::Viewport viewport)
+geng::Matrix3 create_viewport_coordinates_normalization_matrix(const geng::Viewport& viewport)
 {
     return {
         1,  0, 0,
@@ -58,7 +58,17 @@ geng::Matrix3 create_viewport_coordinates_normalization_matrix(const geng::Viewp
     };
 }
 
-geng::Matrix3 create_pan_matrix(const geng::Camera camera)
+geng::Matrix3 create_zoom_matrix(const geng::Camera& camera)
+{
+    const auto s = camera.scale;
+    return {
+        s, 0, 0,
+        0, s, 0,
+        0, 0, 1,
+    };
+}
+
+geng::Matrix3 create_pan_matrix(const geng::Camera& camera)
 {
     return {
         1, 0, -camera.x_offset,
@@ -67,11 +77,12 @@ geng::Matrix3 create_pan_matrix(const geng::Camera camera)
     };
 }
 
-geng::Matrix3 create_translation_matrix(const geng::Camera camera)
+geng::Matrix3 create_translation_matrix(const geng::Camera& camera)
 {
-    auto pan_mtx = geng::camera::create_pan_matrix(camera);
+    const auto pan_mtx = geng::camera::create_pan_matrix(camera);
+    const auto zoom_mtx = geng::camera::create_zoom_matrix(camera);
 
-    return pan_mtx;
+    return pan_mtx * zoom_mtx;
 }
 
 geng::Matrix3 get_transform_matrix(const geng::Doc& doc)
