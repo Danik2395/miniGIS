@@ -1,3 +1,5 @@
 build/
 .cache/
 Testing/
+.mimocode/
+docs/.draft/ai

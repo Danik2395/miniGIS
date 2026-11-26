@@ -1,12 +1,12 @@
-# architecture
+# internals
 
-## assumptions
+# assumptions
 - No WKT check in math functions, thus they must recieve WKT valid objects
 - Epsilon is get from loaded WTK file by the most accurate value
 - Values from WKT stored as doubles,\
     but compared as int64_t via quantization with Epsilon accuracy
 
-## The precision problem:
+# The precision problem:
 
 Need to save WKT file diff -> dynamic precision.
 
@@ -20,7 +20,7 @@ Compare needs to know file precision and not depend on high level modules -> cac
 How to set variable? -> raii for variable (geng::compare::CacheQuantizePrecision) -> raii for cache encapsulation (geng::Doc)
 - Thread that works with particular document will perform comparison with it's precision and won't be infected by it
 
-### How it works:
+## How it works:
 Serialization system create registry for document,\
 frontend init document with it in the `AppState`,\
 when some function needs to be called `AppState::current_doc()` (or `AppState::get_doc(AppState::id_current_doc())` for threads) creates `Doc` that creates `CacheQuantizePrecision` with `Doc::reg().ctx().get<Precision>()`.
@@ -29,40 +29,69 @@ Document then used to pass into function.
 
 Cached precision will live till the task end and set back to default afterwards.
 
-### Rejected implementations:
+## Rejected implementations:
 - Global access to registry because it invalidates multithreading and creates implicit dependencies
 - Middleware dispatcher
 - Cache system
 - Parameter for math functions
 
-## main
-Initialize geng::AppState,\
-set Qt styles,\
-create Qt window.
+# Existing modules
 
-## class GAppWindow
-
-## class GCanvas
-
-## module gengine.camera
-- pan
-- zoom
-- rotate
+## gengine.camera
 - world_to_screen
 - screen_to_world
 - get_cursor_world_pos
 
-## module gengine.toolbox
+## gengine.input
+- update_viewport
+- update_mouse_pos
+- update_mouse_buttons
+- rotate
+- zoom
+- pan
+
+## gengine.looprunner
+- run_frame_loop
+
+## gengine.render
+- query_draw_sequence
+
+## gengine.serialization
+Know what files are supported (.gpkg).render
+Calls convert system.
+
+- load_data_from_file
+- load_data_to_file
+- validate_file_wkt
+
+## gengine.math
+
+## gengine.types
+All internal pure data engine types.
+
+### gengine.types.primitives
+
+### gengine.types.precision
+
+### gengine.types.render
+
+### gengine.types.camera
+
+### gengine.types.input
+
+## gengine.doc
+More than just files.\
+Documents have settings and state as well as they are smart wrappers
+
+# Planned modules
+
+## gengine.toolbox
 - ruler_on_selected_objects
 - area_on_selected_objects
 - find_target_to_snap
 - toggle_tool
 
-## module gengine.input
-- update_mouse_position
-- update_mouse_state
-
-## module gengine.selection
+## gengine.selection
 - hit_test
 - select_object_in_point
 - select_object_in_aabb
@@ -71,49 +100,23 @@ create Qt window.
 - query_objects_selected
 - is_object_selected
 
-## module gengine.validation
+## gengine.validation
 Checks whether geometry is WKT valid.
 - self_intersection_?
 - orientation_?
 - closed_?
 
-## module gengine.spatial
+## gengine.spatial
 - rebuild_index
 - query_objects_in_aabb
 - query_objects_in_point
 - query_objects_nearest_to_point
 - get_object
 
-## module gengine.data_crud
+## gengine.data_crud
 Operation on seen on map entities.
 
-## module gengine.looprunner
-- run_frame_loop
-
-## module gengine.render
-- query_draw_sequence
-
-## module gengine.serialization
-Know what files are supported (.gpkg).render
-Calls convert system.
-
-- load_data_from_file
-- load_data_to_file
-- validate_file_wkt
-
-## module gengine.convert
+## gengine.convert
 - wkb_to_wkt
 - wkt_to_wkb
 
-## module gengine.math
-
-## module gengine.types
-All internal pure data engine types.
-
-### module gengine.types.primitives
-
-### module gengine.types.precision
-
-## module gengine.doc
-More than just files.\
-Documents have settings and state as well as they are smart wrappers
