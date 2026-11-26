@@ -29,7 +29,7 @@ geng::Point screen_to_world(const geng::Matrix3& mtx, geng::Point p)
     return mtx.inverse() * p;
 }
 
-geng::Matrix3 create_viewport_matrix(const geng::Viewport viewport)
+geng::Matrix3 create_viewport_coordinates_normalization_matrix(const geng::Viewport viewport)
 {
     return {
         1,  0, 0,
@@ -60,7 +60,7 @@ geng::Matrix3 get_transform_matrix(const geng::Doc& doc)
     const auto& viewport = doc.reg().ctx().get<geng::Viewport>();
 
     const auto translation_matrix = geng::camera::create_translation_matrix(camera);
-    const auto viewport_matrix = geng::camera::create_viewport_matrix(viewport);
+    const auto viewport_matrix = geng::camera::create_viewport_coordinates_normalization_matrix(viewport);
 
     return viewport_matrix * translation_matrix;
 }
