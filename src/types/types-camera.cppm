@@ -14,5 +14,7 @@ struct Camera
 {
     double x_offset = 0;
     double y_offset = 0;
+
+    double scale = 1;
 };
 } // namespace geng
