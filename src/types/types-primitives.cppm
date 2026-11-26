@@ -315,6 +315,8 @@ public:
 
     Matrix3 inverse() const
     {
+        assert((*this).det() != 0 && "Matrix3::inverse: determinant must be non-zero.");
+
         Matrix3 minor_mtx = {
             minor(0, 0), -minor(0, 1), minor(0, 2),
             -minor(1, 0), minor(1, 1), -minor(1, 2),

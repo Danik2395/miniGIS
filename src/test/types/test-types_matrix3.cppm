@@ -311,3 +311,14 @@ TEST(types_Matrix3, Inverse)
 
     test::matrix3::expect_matrix(result_inverse, expected_inverse);
 }
+
+TEST(types_Matrix3, InverseZeroDeterminantAssert)
+{
+    const geng::Matrix3 mtx = {
+        1, 1, 2,
+        0, 0, 0,
+        6, 7, 8
+    };
+
+    EXPECT_DEBUG_DEATH(std::ignore = mtx.inverse(), "determinant must be non-zero");
+}
