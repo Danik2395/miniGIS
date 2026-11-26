@@ -1,6 +1,7 @@
 #include <QMainWindow>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <new>
 #include <memory>
 #include <filesystem>
@@ -23,6 +24,7 @@ GAppWindow::GAppWindow(QMainWindow* parent)
 
     ui->canvas->installEventFilter(this);
     ui->canvas->setFocusPolicy(Qt::StrongFocus);
+    ui->canvas->setMouseTracking(true);
 
     // on_open_file()
     // {
@@ -87,10 +89,19 @@ bool GAppWindow::action_on_filtered_event(geng::Doc& doc, QEvent* event)
     {
         case QEvent::Resize:
             geng::input::update_viewport(doc, ui->canvas->height(), ui->canvas->width());
+            action_occurred = true;
             break;
 
         case QEvent::KeyPress:
             action_occurred = ui::inputhandle::handle_keypress(doc, static_cast<QKeyEvent*>(event));
+            break;
+
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseButtonDblClick:
+        case QEvent::MouseMove:
+            ui::inputhandle::handle_mouse(doc, static_cast<QMouseEvent*>(event));
+            action_occurred = true;
             break;
 
         default:
