@@ -10,6 +10,8 @@ export namespace geng::camera
 {
 geng::Point world_to_screen(const geng::Matrix3& mtx, geng::Point p);
 
+geng::Point screen_to_world(const geng::Matrix3& mtx, geng::Point p);
+
 geng::Matrix3 get_transform_matrix(const geng::Doc& doc);
 } // namespace geng::camera
 
@@ -22,6 +24,11 @@ geng::Point world_to_screen(const geng::Matrix3& mtx, geng::Point p)
     return mtx * p;
 }
 
+geng::Point screen_to_world(const geng::Matrix3& mtx, geng::Point p)
+{
+    return mtx.inverse() * p;
+}
+
 geng::Matrix3 create_viewport_matrix(const geng::Viewport viewport)
 {
     return {
@@ -31,13 +38,20 @@ geng::Matrix3 create_viewport_matrix(const geng::Viewport viewport)
     };
 }
 
-geng::Matrix3 create_translation_matrix(const geng::Camera camera)
+geng::Matrix3 create_pan_matrix(const geng::Camera camera)
 {
     return {
-        1, 0, -camera.offset_x,
-        0, 1, -camera.offset_y,
+        1, 0, -camera.x_offset,
+        0, 1, -camera.y_offset,
         0, 0, 1,
     };
+}
+
+geng::Matrix3 create_translation_matrix(const geng::Camera camera)
+{
+    auto pan_mtx = geng::camera::create_pan_matrix(camera);
+
+    return pan_mtx;
 }
 
 geng::Matrix3 get_transform_matrix(const geng::Doc& doc)
