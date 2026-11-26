@@ -26,6 +26,8 @@ target_sources(miniGIS_core PUBLIC FILE_SET CXX_MODULES FILES
     src/looprunner/looprunner.cppm
     src/visit/visit.cppm
     src/input/input.cppm
+    src/input/input-hid.cppm
+    src/input/input-screenmovement.cppm
 )
 
 target_link_libraries(miniGIS_core PUBLIC EnTT::EnTT)
