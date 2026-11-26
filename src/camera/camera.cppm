@@ -8,6 +8,8 @@ import gengine.doc;
 
 export namespace geng::camera
 {
+void update_camera_on_mouse_move(geng::Doc& doc);
+
 geng::Point world_to_screen(const geng::Matrix3& mtx, geng::Point p);
 
 geng::Point screen_to_world(const geng::Matrix3& mtx, geng::Point p);
@@ -19,6 +21,24 @@ geng::Matrix3 get_transform_matrix(const geng::Doc& doc);
 
 namespace geng::camera
 {
+void update_camera_on_mouse_move(geng::Doc& doc)
+{
+    auto& mouse = doc.reg().ctx().get<geng::Mouse>();
+
+    // п.77
+    // if (config.mouse_middle_button_pan)
+    // {
+    // if (config.pan_button)
+    if (mouse.buttons.b1_pressed)
+    {
+        auto& camera = doc.reg().ctx().get<geng::Camera>();
+
+        camera.x_offset -= mouse.pos.x - mouse.last_pos.x;
+        camera.y_offset += mouse.pos.y - mouse.last_pos.y;
+    }
+    // }
+}
+
 geng::Point world_to_screen(const geng::Matrix3& mtx, geng::Point p)
 {
     return mtx * p;
