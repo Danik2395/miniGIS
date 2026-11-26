@@ -42,6 +42,8 @@ private:
 
         registry.ctx().emplace<geng::Viewport>();
 
+        registry.ctx().emplace<geng::Mouse>();
+
         return registry;
     }
 };

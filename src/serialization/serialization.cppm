@@ -159,6 +159,8 @@ void emplace_context_variables(entt::registry& reg)
     reg.ctx().emplace<geng::Camera>();
 
     reg.ctx().emplace<geng::Viewport>();
+
+    reg.ctx().emplace<geng::Mouse>();
 }
 
 entt::registry reg_from_file(const std::filesystem::path& path)
