@@ -33,6 +33,11 @@ constexpr std::array key_bindings = {
     ui::inputhandle::KeyBinding{Qt::Key_Down,  [](geng::Doc& d){ geng::input::pan(d,   0.0, -25.0); }},
     ui::inputhandle::KeyBinding{Qt::Key_Left,  [](geng::Doc& d){ geng::input::pan(d, -25.0,   0.0); }},
     ui::inputhandle::KeyBinding{Qt::Key_Right, [](geng::Doc& d){ geng::input::pan(d,  25.0,   0.0); }},
+    ui::inputhandle::KeyBinding{Qt::Key_Plus,  [](geng::Doc& d){ geng::input::zoom_by(d, 1.02); }},
+    ui::inputhandle::KeyBinding{Qt::Key_Minus, [](geng::Doc& d){ geng::input::zoom_by(d, 0.98); }},
+    ui::inputhandle::KeyBinding{Qt::Key_0, [](geng::Doc& d){ geng::input::zoom_to(d, 1.0); }},
+    ui::inputhandle::KeyBinding{Qt::Key_2, [](geng::Doc& d){ geng::input::zoom_to(d, 0.2); }},
+    ui::inputhandle::KeyBinding{Qt::Key_5, [](geng::Doc& d){ geng::input::zoom_to(d, 0.5); }},
 };
 
 bool handle_keypress(geng::Doc& doc, QKeyEvent* key_event)
